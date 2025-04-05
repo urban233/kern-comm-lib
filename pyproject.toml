@@ -1,0 +1,20 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "kern-comm-lib"
+version = "0.0.1"
+description = "Kern: A collection of robust, foundational Python utilities for building reliable and maintainable applications."
+authors = [
+    {name = "Martin Urban",email = "martin.urban@studmail.w-hs.de"}
+]
+license = {text = "BSD-3-Clause"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+]
+
+[project.urls]
+homepage = "https://github.com/urban233/kern-comm-lib"
+repository = "https://github.com/urban233/kern-comm-lib"
