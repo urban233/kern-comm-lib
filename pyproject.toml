@@ -18,3 +18,33 @@ dependencies = [
 [project.urls]
 homepage = "https://github.com/urban233/kern-comm-lib"
 repository = "https://github.com/urban233/kern-comm-lib"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "__init__.py",
+]
+line-length = 80
+indent-width = 2
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = [
+    "F401",  # unused-import
+    "D208",  # Docstring is over-indented
+    #  "E501",  #  Line too long (x > 80)
+    "ANN201",  #  Missing return type annotation for public function
+    "D212",  #  Multi-line docstring summary should start at the first line
+    "A003",  # builtin-attribute-shadowing
+    "W291",  # trailing-whitespace
+    "PTH110",  # `os.path.exists()` should be replaced by `pathlib.Path.exists()`
+    "Q000",   # Single quotes found but double quotes preferred
+]
+ignore = []
+# Allow fix for all enabled rules (when `--fix`) is provided.
+# Full list of rules: https://docs.astral.sh/ruff/rules/
+fixable = ["D208", "W291", "PTH110"]
+unfixable = []
+
+[tool.ruff.format]
+indent-style = "space"
