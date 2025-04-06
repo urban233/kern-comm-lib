@@ -6,7 +6,7 @@ import kern_comm_lib as kern
 def add_to_list(src_list: list, new_item: int) -> kern.Status:
   """Add two numbers."""
   if len(src_list) == 0:
-    return kern.status.InvalidArgumentError("List is empty!")
+    return kern.status.invalid_argument_error("List is empty!")
   src_list.append(new_item)
   return kern.Status()
 
@@ -14,8 +14,23 @@ def add_to_list(src_list: list, new_item: int) -> kern.Status:
 def divide(a: int, b: int) -> kern.AStatusOrElse[float]:
   """Divide two numbers."""
   if b == 0:
-    return kern.status.ZeroDivisionError("Division by zero!")
+    return kern.status.zero_division_error("Division by zero!")
   return a / b
+
+
+@kern.wrap_to_status
+def exists(path: pathlib.Path) -> kern.AStatusOrElse[bool]:
+  return path.exists()
+
+
+def test_decorator() -> None:
+  """Test the decorator."""
+  tmp_path = pathlib.Path("test.txt")
+  tmp_status = kern.StatusOr(bool, exists(tmp_path))
+  if tmp_status.ok():
+    print(f"Path exists: {tmp_path}")
+  else:
+    print(f"Error: {tmp_status.status()}")
 
 
 def test_status_or_init() -> None:
@@ -53,7 +68,7 @@ def test_status_or_contains_value() -> None:
 
 def test_status_or_contains_error() -> None:
   """StatusOr should contain an error status."""
-  error_status = kern.status.InvalidArgumentError("Invalid argument")
+  error_status = kern.status.invalid_argument_error("Invalid argument")
   result = kern.StatusOr(int, error_status)
   assert result.ok() is False
   assert result.status() == error_status

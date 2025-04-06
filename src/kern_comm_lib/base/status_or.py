@@ -1,22 +1,33 @@
 """
-#A* -------------------------------------------------------------------
-#B* This file contains source code for running automation tasks related
-#-* to the build process of the Kern - Common Python Libraries project.
-#C* Copyright 2025 by Martin Urban.
-#D* -------------------------------------------------------------------
-#E* It is unlawful to modify or remove this copyright notice.
-#F* -------------------------------------------------------------------
-#G* Please see the accompanying LICENSE file for further information.
-#H* -------------------------------------------------------------------
-#I* Additional authors of this source file include:
-#-*
-#-*
-#-*
-#Z* -------------------------------------------------------------------
+A `kern.StatusOr` represents a class that holds a kern.Status object and
+a possible value of a certain type.
+The `kern.StatusOr` will either contain an object of a certain type
+(indicating a successful operation), or an error (of type
+`kern.Status`) explaining why such a value is not present.
+
+In general, check the success of an operation returning an
+`kern.StatusOr` like you would an `kern.Status` by using the `ok()`
+member function.
 """
+# A* -------------------------------------------------------------------
+# B* This file contains source code for the Kern - Common Python
+# -* Libraries project
+# C* Copyright 2025 by Martin Urban.
+# D* -------------------------------------------------------------------
+# E* It is unlawful to modify or remove this copyright notice.
+# F* -------------------------------------------------------------------
+# G* Please see the accompanying LICENSE file for further information.
+# H* -------------------------------------------------------------------
+# I* Additional authors of this source file include:
+# -*
+# -*
+# -*
+# Z* -------------------------------------------------------------------
+from functools import wraps
+from typing import Union, Optional, Any, Callable
+
 from kern_comm_lib.base import status
 from kern_comm_lib.base import status_code
-from typing import Union, Optional
 
 
 class StatusOr:
@@ -31,26 +42,10 @@ class StatusOr:
       val: The value if the operation succeeded, None otherwise.
       status: A Status object representing the operation result.
           Will be an OK status if the operation succeeded.
-
-  Example:
-      ```python
-      # Function returning StatusOr
-      def divide(a: int, b: int) -> StatusOr:
-          if b == 0:
-              return StatusOr(float, Status.ZeroDivisionError("Division by zero!"))
-          return StatusOr(float, a / b)
-
-      # Using the StatusOr result
-      result = divide(10, 2)
-      if result.ok():
-          print(f"Result: {result.val}")
-      else:
-          print(f"Error: {result.status}")
-      ```
   """
 
   def __init__(
-    self, a_type: type, a_val_or_status: Union[object, status.Status]
+          self, a_type: type, a_val_or_status: Union[object, status.Status]
   ):
     """Constructor.
 
@@ -70,7 +65,7 @@ class StatusOr:
     else:
       # Check if the val is of the correct type or None
       if a_val_or_status is not None and not isinstance(
-        a_val_or_status, a_type
+              a_val_or_status, a_type
       ):
         print(
           f"Expected value of type {a_type.__name__}, got {type(a_val_or_status).__name__}"
@@ -79,14 +74,33 @@ class StatusOr:
       self._val = a_val_or_status
       self._status = status.Status()
 
-  def ok(self) -> bool:
-    """Checks if the StatusOr contains a valid value.
+  # <editor-fold desc="Alternative constructors">
+  @staticmethod
+  def from_exception(
+          exception: Exception, include_traceback: bool = True
+  ) -> "StatusOr":
+    """Alternative constructor that creates a StatusOr object from a Python exception.
+
+    Args:
+        exception: The Python exception.
+        include_traceback: Whether to include the exception's traceback.
 
     Returns:
-        True if the StatusOr contains a valid value, False if it contains an error.
+        Status: A Status object with the appropriate status code, message, and optionally traceback.
     """
-    return self._status.status_code() is status_code.StatusCode.OK
+    tmp_status = status.Status(
+      status_code.get_status_code_for_exception(exception), str(exception)
+    )
+    if include_traceback:
+      tmp_status.set_traceback(
+        status_code.format_exception_traceback(exception)
+      )
+    return StatusOr(None, tmp_status)  # type: ignore
 
+  # </editor-fold>
+
+  # <editor-fold desc="Public methods">
+  # <editor-fold desc="Getter">
   def status(self) -> "status.Status":
     """Gets the Status object.
 
@@ -102,3 +116,13 @@ class StatusOr:
       The value if the operation succeeded, None otherwise.
     """
     return self._val
+  # </editor-fold>
+
+  def ok(self) -> bool:
+    """Checks if the StatusOr contains a valid value.
+
+    Returns:
+        True if the StatusOr contains a valid value, False if it contains an error.
+    """
+    return self._status.status_code() is status_code.StatusCode.OK
+  # </editor-fold>

@@ -1,29 +1,28 @@
-"""
-#A* -------------------------------------------------------------------
-#B* This file contains source code for running automation tasks related
-#-* to the build process of the Kern - Common Python Libraries project.
-#C* Copyright 2025 by Martin Urban.
-#D* -------------------------------------------------------------------
-#E* It is unlawful to modify or remove this copyright notice.
-#F* -------------------------------------------------------------------
-#G* Please see the accompanying LICENSE file for further information.
-#H* -------------------------------------------------------------------
-#I* Additional authors of this source file include:
-#-*
-#-*
-#-*
-#Z* -------------------------------------------------------------------
-"""
+"""Module that contains the canonical status codes for the Kern - Common Python Libraries project."""
+# A* -------------------------------------------------------------------
+# B* This file contains source code for the Kern - Common Python
+# -* Libraries project
+# C* Copyright 2025 by Martin Urban.
+# D* -------------------------------------------------------------------
+# E* It is unlawful to modify or remove this copyright notice.
+# F* -------------------------------------------------------------------
+# G* Please see the accompanying LICENSE file for further information.
+# H* -------------------------------------------------------------------
+# I* Additional authors of this source file include:
+# -*
+# -*
+# -*
+# Z* -------------------------------------------------------------------
 import enum
+import traceback
 
 
 class StatusCode(enum.IntEnum):
-  """Status codes for StatusOr and Status classes.
+  """Status codes for the Status class.
 
   Includes Google canonical error codes (0-16), custom codes, and Python standard
   error codes (100+).
   """
-
   # <editor-fold desc="Google canonical error codes">
   OK = 0
   CANCELLED = 1
@@ -157,6 +156,7 @@ EXCEPTION_TO_STATUS_CODE = {
 }
 
 
+# <editor-fold desc="Public functions">
 def get_status_code_for_exception(exception: Exception) -> StatusCode:
   """Maps a Python exception to the appropriate StatusCode.
 
@@ -167,16 +167,13 @@ def get_status_code_for_exception(exception: Exception) -> StatusCode:
       The corresponding StatusCode enum value
   """
   exception_type = type(exception)
-
   # Direct type lookup
   if exception_type in EXCEPTION_TO_STATUS_CODE:
     return EXCEPTION_TO_STATUS_CODE[exception_type]
-
   # Try to find a parent exception class
   for exc_type, code in EXCEPTION_TO_STATUS_CODE.items():
     if isinstance(exception, exc_type):
       return code
-
   # Default fallback
   return StatusCode.UNKNOWN
 
@@ -190,10 +187,9 @@ def format_exception_traceback(exception: Exception) -> str:
   Returns:
       A formatted string containing the traceback information
   """
-  import traceback
-
   return "".join(
     traceback.format_exception(
       type(exception), exception, exception.__traceback__
     )
   )
+# </editor-fold>

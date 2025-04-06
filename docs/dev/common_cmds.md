@@ -16,7 +16,7 @@ poetry build
 ```
 
 ```shell
-pip install .\dist\kern_comm_lib-0.0.1-py3-none-any.whl
+pip install .\dist\kern_comm_lib-0.0.2-py3-none-any.whl --force-reinstall
 ```
 
 ```shell
