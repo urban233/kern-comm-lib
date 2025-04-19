@@ -23,11 +23,9 @@ member function.
 # -*
 # -*
 # Z* -------------------------------------------------------------------
-from functools import wraps
-from typing import Union, Optional, Any, Callable
+from typing import Union, Optional
 
-from kern_comm_lib.base import status
-from kern_comm_lib.base import status_code
+from kern_comm_lib.status import status_code, status
 
 
 class StatusOr:

@@ -16,15 +16,18 @@
 """
 from typing import TypeVar, Union
 
-from kern_comm_lib.base import status
-from kern_comm_lib.base.status import Status
-from kern_comm_lib.base.status import wrap_to_status
-from kern_comm_lib.base.status_or import StatusOr
-from kern_comm_lib.base.status_code import StatusCode
+from kern_comm_lib.status import status
+from kern_comm_lib.status.status import Status
+from kern_comm_lib.status.status import use_status
+from kern_comm_lib.status.status_or import StatusOr
+from kern_comm_lib.status.status_code import StatusCode
 from kern_comm_lib.os.platform_vars import IS_WIN
 from kern_comm_lib.os.platform_vars import IS_DARWIN
 from kern_comm_lib.os.platform_vars import IS_LINUX
-
+from kern_comm_lib import log
+from kern_comm_lib.log.check import DCHECK
 
 T = TypeVar('T')
 AStatusOrElse = Union[T, Status]  # Convenient alias for a "value or status" type
+
+__all__ = ["DCHECK"]

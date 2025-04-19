@@ -16,3 +16,4 @@ Classes
     :maxdepth: 1
 
     status/status
+    status/status_or

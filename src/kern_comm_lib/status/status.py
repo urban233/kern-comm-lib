@@ -29,7 +29,7 @@ These canonical codes are understood across the codebase
 from typing import Union, Optional, Any, Callable
 from functools import wraps
 
-from kern_comm_lib.base import status_code
+from kern_comm_lib.status import status_code
 
 __docformat__ = "google"
 
@@ -138,7 +138,7 @@ class Status:
   # </editor-fold>
 
 
-def wrap_to_status(func: Callable[..., Any]) -> Callable[..., Union[Any, Status]]:
+def use_status(func: Callable[..., Any]) -> Callable[..., Union[Any, Status]]:
   """Decorator that wraps a function and converts exceptions to StatusOr objects."""
   @wraps(func)
   def wrapper(*args: Any, **kwargs: Any) -> Union[Any, Status]:
