@@ -1,5 +1,5 @@
 import kern_comm_lib as kern
-from kern_comm_lib.status import status_code
+from kern_comm_lib.base.status import status_code
 
 
 def test_status_code_ok() -> None:

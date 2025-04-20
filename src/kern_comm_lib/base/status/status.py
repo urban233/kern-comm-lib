@@ -29,7 +29,7 @@ These canonical codes are understood across the codebase
 from typing import Union, Optional, Any, Callable
 from functools import wraps
 
-from kern_comm_lib.status import status_code
+from kern_comm_lib.base.status import status_code
 
 __docformat__ = "google"
 

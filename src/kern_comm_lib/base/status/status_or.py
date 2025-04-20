@@ -25,7 +25,7 @@ member function.
 # Z* -------------------------------------------------------------------
 from typing import Union, Optional
 
-from kern_comm_lib.status import status_code, status
+from kern_comm_lib.base.status import status_code, status
 
 
 class StatusOr:
