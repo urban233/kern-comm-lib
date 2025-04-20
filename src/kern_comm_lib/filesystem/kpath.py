@@ -1,11 +1,58 @@
+"""
+Copyright 2025 by Martin Urban.
+
+It is unlawful to modify or remove this copyright notice.
+Licensed under the BSD-3-Clause;
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://opensource.org/license/bsd-3-clause
+
+or please see the accompanying LICENSE file for further information.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+---------------------------------------------------------------------------
+File: filesystem/kpath.py
+---------------------------------------------------------------------------
+
+The pathlib.Path class is commonly used for file and directory operations
+in Python. To provide a consistent interface for file system operations,
+that does not use exceptions, a wrapper class is created called KPath.
+This class wraps the pathlib.Path class and provides methods for file and
+directory operations, such as creating directories, reading and writing files,
+and checking file existence. The KPath class also provides a way to set
+file permissions using the FilesystemModes enum.
+
+The interface of the KPath class is kept very similar to the pathlib.Path class
+to enable a drop-in replacement. Therefore, the migration to the KPath class
+is straightforward.
+
+The class uses the DCHECK_ functions from the `base.log.check` module to do any
+argument checks. To disable the checks, the -O flag needs to be set when running
+the Python interpreter.
+"""
 import enum
 import pathlib
 import shutil
 from typing import Optional, Union, List
+
 import kern_comm_lib as kern
+
+__docformat__ = "google"
 
 
 class FilesystemModes(enum.IntEnum):
+  """Enum for file and directory permissions."""
   ALL_RWX = 0o777
   """Full permissions (read, write, execute) for owner, group, and others"""
   ALL_RW = 0o666
@@ -167,7 +214,7 @@ class KPath:
       self._path.mkdir(mode=mode, parents=parents, exist_ok=exist_ok)
       return kern.Status()
     except FileExistsError:
-      return kern.status.custom_error(
+      return kern.Status.from_status_code(
         kern.StatusCode.ALREADY_EXISTS,
         f"Directory already exists: {self._path}"
       )

@@ -6,7 +6,7 @@ import kern_comm_lib as kern
 def add_to_list(src_list: list, new_item: int) -> kern.Status:
   """Add two numbers."""
   if len(src_list) == 0:
-    return kern_comm_lib.base.status.status.invalid_argument_error("List is empty!")
+    return kern.status.invalid_argument_error("List is empty!")
   src_list.append(new_item)
   return kern.Status()
 
@@ -14,7 +14,7 @@ def add_to_list(src_list: list, new_item: int) -> kern.Status:
 def divide(a: int, b: int) -> kern.AStatusOrElse[float]:
   """Divide two numbers."""
   if b == 0:
-    return kern_comm_lib.base.status.status.zero_division_error("Division by zero!")
+    return kern.status.zero_division_error("Division by zero!")
   return a / b
 
 
@@ -68,7 +68,7 @@ def test_status_or_contains_value() -> None:
 
 def test_status_or_contains_error() -> None:
   """StatusOr should contain an error status."""
-  error_status = kern_comm_lib.base.status.status.invalid_argument_error("Invalid argument")
+  error_status = kern.status.invalid_argument_error("Invalid argument")
   result = kern.StatusOr(int, error_status)
   assert result.ok() is False
   assert result.status() == error_status
