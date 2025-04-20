@@ -93,11 +93,17 @@ def DCHECK_EQ(arg1: object, arg2: object):
     if arg1 != arg2:
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
-      frame = inspect.currentframe().f_back
-      filename = frame.f_code.co_filename
-      lineno = frame.f_lineno
-      # Print the fatal error and exit
-      print(f"FATAL ERROR: {filename}:{lineno}: {arg1} is NOT equal to {arg2}", file=sys.stderr)
+      current_frame = inspect.currentframe()
+      if current_frame is not None:
+        frame = current_frame.f_back
+        if frame is not None:
+          filename = frame.f_code.co_filename
+          lineno = frame.f_lineno
+          print(f"FATAL ERROR: {filename}:{lineno}: {arg1} is NOT equal to {arg2}", file=sys.stderr)
+        else:
+          print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+      else:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
       exit(1)
 
 

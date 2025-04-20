@@ -1,5 +1,5 @@
 # Kern - Common Python Libraries
-[![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/) [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/) [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 The repository contains the Kern Python library code. 
 Kern (`kern-comm-lib`) is an open-source collection of Python code designed to augment the Python standard library.
@@ -23,6 +23,11 @@ and features modern error handling with `Status` and `StatusOr` to eliminate run
 ```bash
 pip install kern-comm-lib
 ```
+
+## Contributing 🤝
+Contributions are welcome! 
+Be aware that this project uses ruff as a linter and formatter,
+and pyright as a type checker.
 
 ## License 📜
 BSD-3 Clause. See [LICENSE](LICENSE).

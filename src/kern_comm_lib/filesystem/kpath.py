@@ -92,8 +92,10 @@ class KPath:
     # </editor-fold>
     # If the path is a string or a KPath object, it has to be converted
     # to a pathlib.Path object because KPath is a wrapper around pathlib.Path.
-    if not isinstance(a_path, pathlib.Path):
+    if isinstance(a_path, str):
       self._path: pathlib.Path = pathlib.Path(a_path)
+    elif isinstance(a_path, KPath):
+      self._path: pathlib.Path = pathlib.Path(a_path.path)
     else:
       self._path: pathlib.Path = a_path
 
@@ -116,6 +118,15 @@ class KPath:
   # </editor-fold>
 
   # <editor-fold desc="Getter methods">
+  @property
+  def path(self) -> pathlib.Path:
+    """Gets the underlying pathlib.Path object.
+
+    Returns:
+      The underlying pathlib.Path object.
+    """
+    return self._path
+  
   @property
   def name(self) -> str:
     """Gets the name of the file or directory.
