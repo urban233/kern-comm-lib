@@ -86,5 +86,5 @@ pyink-indentation = 2
 [tool.pyright]
 include = ["src/kern_comm_lib"]
 ignore = ["automations"]
-# Don't require type stub files (*.pyi) for all imports
-reportMissingTypeStubs = false
+reportMissingTypeStubs = false  # Don't require type stub files (*.pyi) for all imports
+reportMissingImports = false  # Due to the support of multiple frameworks not every needs to be installed

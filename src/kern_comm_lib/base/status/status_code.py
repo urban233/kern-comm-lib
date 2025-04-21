@@ -43,6 +43,8 @@ add any custom error codes you need.
 import enum
 import traceback
 
+__docformat__ = "google"
+
 
 class StatusCode(enum.IntEnum):
   """Status codes for the Status class.

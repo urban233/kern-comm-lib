@@ -21,16 +21,42 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ---------------------------------------------------------------------------
-File: __init__.py
+File: base/log/log_severity.py
 ---------------------------------------------------------------------------
 
-This file defines the public API of the Kern - Common Python Libraries project.
+This file declares the log severity level arguments:
+- INFO
+- WARNING
+- ERROR
+- FATAL
+
+These should be used with the appropriate LOG function from the base/log/log.py
+file.
 """
 
-# The following import structure is strictly necessary to make the package work
-# and avoid circular imports!
+import enum
 
-# The wildcard import ensures that every public API exposure is defined by its
-# own package
-from kern_comm_lib.base import *
-from kern_comm_lib import filesystem
+__docformat__ = "google"
+
+
+class LogSeverity(enum.IntEnum):
+  """An enumeration representing the severity levels for logging.
+
+  Attributes:
+    INFO: Informational messages that highlight the progress of the application.
+    WARNING: Potentially harmful situations that should be noted.
+    ERROR: Error events that might still allow the application to continue running.
+    FATAL: Severe error events that will lead the application to abort.
+  """
+
+  INFO = 0
+  WARNING = 1
+  ERROR = 2
+  FATAL = 3
+
+
+# Convenience aliases for easier access to log severity levels
+INFO = LogSeverity.INFO  # Alias for informational messages
+WARNING = LogSeverity.WARNING  # Alias for warning messages
+ERROR = LogSeverity.ERROR  # Alias for error messages
+FATAL = LogSeverity.FATAL  # Alias for fatal error messages

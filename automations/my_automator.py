@@ -57,7 +57,7 @@ AUTOMATION_TREE = {
         "help": "Formats the Python source using ruff.",
         "func": format_code.format_python_code,
       },
-      "type_check": {
+      "type-check": {
         "help": "Runs the static type checker pyright over the Python source code.",
         "func": type_check_code.type_check_python_code,
       },

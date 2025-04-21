@@ -79,12 +79,28 @@ def DCHECK(
   if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     # Evaluate the condition lazily only in debug mode
     if not condition():
+      # <editor-fold desc="Gets caller's frame information">
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
-      frame = inspect.currentframe().f_back
+      current_frame = inspect.currentframe()
+      if current_frame is None:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
       filename = frame.f_code.co_filename
       lineno = frame.f_lineno
-      # Print the fatal error and exit
+      # </editor-fold>
+      if message is None:
+        print(
+            f"FATAL ERROR: {filename}:{lineno}: The given condition is not true",
+            file=sys.stderr,
+        )
+        sys.exit(1)
       print(f"FATAL ERROR: {filename}:{lineno}: {message()}", file=sys.stderr)
       sys.exit(1)
 
@@ -93,22 +109,26 @@ def DCHECK_EQ(arg1: object, arg2: object) -> None:
   """Checks if two values are equal."""
   if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     if arg1 != arg2:
+      # <editor-fold desc="Gets caller's frame information">
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
       current_frame = inspect.currentframe()
-      if current_frame is not None:
-        frame = current_frame.f_back
-        if frame is not None:
-          filename = frame.f_code.co_filename
-          lineno = frame.f_lineno
-          print(
-              f"FATAL ERROR: {filename}:{lineno}: {arg1} is NOT equal to {arg2}",
-              file=sys.stderr,
-          )
-        else:
-          print("FATAL ERROR: Caller frame is None", file=sys.stderr)
-      else:
+      if current_frame is None:
         print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      filename = frame.f_code.co_filename
+      lineno = frame.f_lineno
+      # </editor-fold>
+      print(
+          f"FATAL ERROR: {filename}:{lineno}: {arg1} is NOT equal to {arg2}",
+          file=sys.stderr,
+      )
       sys.exit(1)
 
 
@@ -116,12 +136,22 @@ def DCHECK_NOT_EQ(arg1: object, arg2: object) -> None:
   """Checks if two values are equal."""
   if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     if arg1 == arg2:
+      # <editor-fold desc="Gets caller's frame information">
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
-      frame = inspect.currentframe().f_back
+      current_frame = inspect.currentframe()
+      if current_frame is None:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
       filename = frame.f_code.co_filename
       lineno = frame.f_lineno
-      # Print the fatal error and exit
+      # </editor-fold>
       print(
           f"FATAL ERROR: {filename}:{lineno}: {arg1} is equal to {arg2}",
           file=sys.stderr,
@@ -133,12 +163,22 @@ def DCHECK_NOT_NONE(val: object) -> None:
   """Checks if a value is not None."""
   if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     if val is None:
+      # <editor-fold desc="Gets caller's frame information">
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
-      frame = inspect.currentframe().f_back
+      current_frame = inspect.currentframe()
+      if current_frame is None:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
       filename = frame.f_code.co_filename
       lineno = frame.f_lineno
-      # Print the fatal error and exit
+      # </editor-fold>
       print(
           f"FATAL ERROR: {filename}:{lineno}: Value should not be None",
           file=sys.stderr,
@@ -153,18 +193,28 @@ def DCHECK_IN_ENUM(a_val: object, an_enum_class: type["enum.IntEnum"]) -> None:
       a_val: The value to check
       an_enum_class: The enum class to check against
   """
-  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
+  if __debug__:
     try:
       an_enum_class(
           a_val
       )  # This will raise ValueError if val is not in the enum
     except ValueError:
+      # <editor-fold desc="Gets caller's frame information">
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
-      frame = inspect.currentframe().f_back
+      current_frame = inspect.currentframe()
+      if current_frame is None:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
       filename = frame.f_code.co_filename
       lineno = frame.f_lineno
-      # Print the fatal error and exit
+      # </editor-fold>
       print(
           f"FATAL ERROR: {filename}:{lineno}: Value {a_val} is not a valid member of enum {an_enum_class.__name__}",
           file=sys.stderr,

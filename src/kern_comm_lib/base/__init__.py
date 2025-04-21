@@ -29,15 +29,6 @@ This file defines the public API of the base package.
 
 from typing import TypeVar, Union
 
-from kern_comm_lib.base import log
-from kern_comm_lib.base.log.check import (
-    DCHECK,
-    DCHECK_EQ,
-    DCHECK_IN_ENUM,
-    DCHECK_NOT_EQ,
-    DCHECK_NOT_NONE,
-)
-from kern_comm_lib.base.os.platform_vars import IS_DARWIN, IS_LINUX, IS_WIN
 from kern_comm_lib.base.status import status
 from kern_comm_lib.base.status.status import Status, use_status
 from kern_comm_lib.base.status.status_code import StatusCode
@@ -47,3 +38,44 @@ T = TypeVar("T")
 AStatusOrElse = Union[
     T, Status
 ]  # Convenient alias for a "value or status" type
+
+from kern_comm_lib.base.log.check import DCHECK
+from kern_comm_lib.base.log.check import DCHECK_EQ
+from kern_comm_lib.base.log.check import DCHECK_IN_ENUM
+from kern_comm_lib.base.log.check import DCHECK_NOT_EQ
+from kern_comm_lib.base.log.check import DCHECK_NOT_NONE
+
+from kern_comm_lib.base.log.log_severity import LogSeverity
+from kern_comm_lib.base.log.log_severity import INFO
+from kern_comm_lib.base.log.log_severity import WARNING
+from kern_comm_lib.base.log.log_severity import ERROR
+from kern_comm_lib.base.log.log_severity import FATAL
+
+from kern_comm_lib.base.log.log_handlers import FileLogHandler
+from kern_comm_lib.base.log.log_handlers import ConsoleLogHandler
+
+from kern_comm_lib.base.log.log import init_kern_logging
+from kern_comm_lib.base.log.log import LOG
+from kern_comm_lib.base.log.log import LOG_INFO
+from kern_comm_lib.base.log.log import LOG_WARNING
+from kern_comm_lib.base.log.log import LOG_ERROR
+from kern_comm_lib.base.log.log import LOG_FATAL
+from kern_comm_lib.base.log.log import DLOG
+from kern_comm_lib.base.log.log import DLOG_INFO
+from kern_comm_lib.base.log.log import DLOG_WARNING
+from kern_comm_lib.base.log.log import DLOG_ERROR
+from kern_comm_lib.base.log.log import DLOG_FATAL
+from kern_comm_lib.base.log.log import TLOG
+from kern_comm_lib.base.log.log import TLOG_INFO
+from kern_comm_lib.base.log.log import TLOG_WARNING
+from kern_comm_lib.base.log.log import TLOG_ERROR
+from kern_comm_lib.base.log.log import TLOG_FATAL
+from kern_comm_lib.base.log.log import DTLOG
+from kern_comm_lib.base.log.log import DTLOG_INFO
+from kern_comm_lib.base.log.log import DTLOG_WARNING
+from kern_comm_lib.base.log.log import DTLOG_ERROR
+from kern_comm_lib.base.log.log import DTLOG_FATAL
+
+from kern_comm_lib.base.os.platform_vars import IS_WIN
+from kern_comm_lib.base.os.platform_vars import IS_DARWIN
+from kern_comm_lib.base.os.platform_vars import IS_LINUX
