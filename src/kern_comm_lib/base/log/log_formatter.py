@@ -32,27 +32,59 @@ import datetime
 import inspect
 from kern_comm_lib.base.log import log_severity
 
+
 class LogFormatter:
+  """A class for formatting log messages with customizable patterns.
+
+  This formatter allows developers to define a custom log message prefix
+  format, similar to the GLog library. The format can include placeholders
+  for date, time, severity, file name, and line number.
+
+  Attributes:
+    format_pattern (str): The pattern for formatting log messages. If None,
+        a default pattern is used that mimics GLog.
+  """
+
   def __init__(self, format_pattern: str = None) -> None:
-    """Constructor.
+    """Initializes the LogFormatter with a given format pattern.
 
     Args:
-      format_pattern: The pattern for formatting log messages. If None, a default pattern is used.
+      format_pattern (default: None): The pattern for formatting log messages.
 
     Notes:
       Default pattern mimics GLog:
-        - %severity% -> first letter of severity
-        - %Y%m%d -> full date
-        - %H:%M:%S.%f -> time with microseconds
-        - [%F:%L] -> file name and line number of the log call
+        - %severity% -> First letter of severity (e.g., I, W, E, F)
+        - %Y%m%d -> Full date (year, month, day)
+        - %H:%M:%S.%f -> Time with microseconds
+        - [%F:%L] -> File name and line number of the log call
     """
     if format_pattern is None:
       format_pattern = "%severity%%Y%m%d %H:%M:%S.%f [%F:%L] "
     self.format_pattern = format_pattern
 
   def format(self, severity: log_severity.LogSeverity, message: str) -> str:
-    now = datetime.datetime.now()
-    stack = inspect.stack()
+    """Formats a log message with the specified severity and message.
+
+    This method generates a log message prefix based on the format pattern
+    and replaces placeholders with actual values such as the current date,
+    time, severity, file name, and line number.
+
+    Args:
+      severity: The severity level of the log message.
+      message: The log message to be formatted.
+
+    Returns:
+      The formatted log message with the prefix.
+
+    Notes:
+      - The file name and line number are determined using the `inspect` module.
+      - If the stack depth is insufficient, "unknown" and -1 are used as defaults
+        for the file name and line number, respectively.
+    """
+    now = datetime.datetime.now()  # Get the current date and time
+    stack = inspect.stack()  # Retrieve the call stack
+
+    # Determine the caller's file name and line number
     if len(stack) > 5:
       caller_frame = stack[5]
       filename = caller_frame.filename.split("/")[-1]
@@ -61,20 +93,26 @@ class LogFormatter:
       filename = "unknown"
       lineno = -1
 
+    # Mapping of placeholders to their corresponding values
     mapping = {
-      "%Y": f"{now.year:04d}",
-      "%m": f"{now.month:02d}",
-      "%d": f"{now.day:02d}",
-      "%H": f"{now.hour:02d}",
-      "%M": f"{now.minute:02d}",
-      "%S": f"{now.second:02d}",
-      "%f": f"{now.microsecond:06d}",
-      "%severity%": severity.name[0] if severity.name else "?",
-      "%F": filename,
-      "%L": str(lineno)
+        "%Y": f"{now.year:04d}",  # Year (4 digits)
+        "%m": f"{now.month:02d}",  # Month (2 digits)
+        "%d": f"{now.day:02d}",  # Day (2 digits)
+        "%H": f"{now.hour:02d}",  # Hour (2 digits)
+        "%M": f"{now.minute:02d}",  # Minute (2 digits)
+        "%S": f"{now.second:02d}",  # Second (2 digits)
+        "%f": f"{now.microsecond:06d}",  # Microsecond (6 digits)
+        "%severity%": severity.name[0]
+        if severity.name
+        else "?",  # First letter of severity
+        "%F": filename,  # File name
+        "%L": str(lineno),  # Line number
     }
 
+    # Replace placeholders in the format pattern with actual values
     formatted_prefix = self.format_pattern
     for key, value in mapping.items():
       formatted_prefix = formatted_prefix.replace(key, value)
+
+    # Return the formatted log message
     return f"{formatted_prefix}{message}"

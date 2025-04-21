@@ -31,7 +31,6 @@ the use of different locking mechanisms depending on the threading framework
 
 import threading
 from abc import ABC, abstractmethod
-from contextlib import contextmanager
 
 __docformat__ = "google"
 
@@ -57,7 +56,6 @@ class LockInterface(ABC):
     """Releases the lock."""
     pass
 
-
   def __enter__(self):
     """Context manager entry method. Acquires the lock."""
     self.acquire()
@@ -72,7 +70,7 @@ class ThreadingLock(LockInterface):
   """Lock implementation using Python's threading.RLock.
 
   Attributes:
-    _lock (threading.RLock): The underlying reentrant lock.
+    _lock: The underlying reentrant lock.
   """
 
   def __init__(self) -> None:

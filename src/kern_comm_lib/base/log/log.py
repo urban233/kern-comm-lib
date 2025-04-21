@@ -30,6 +30,7 @@ Most `LOG` macros take a severity level argument.  The severity levels are
 `INFO`, `WARNING`, `ERROR`, and `FATAL`.  They are defined
 in base/log/log_severity.py.
 """
+
 import sys
 
 from kern_comm_lib.base import Status
@@ -153,6 +154,8 @@ def LOG_FATAL(message: str) -> None:
   import sys
 
   sys.exit(1)  # Terminate the program in case of a fatal error
+
+
 # </editor-fold>
 
 
@@ -231,6 +234,8 @@ def DLOG_FATAL(message: str) -> None:
   if __debug__:
     DLOG(FATAL, message)
     sys.exit(1)
+
+
 # </editor-fold>
 
 
@@ -297,6 +302,8 @@ def TLOG_FATAL(message: str) -> None:
   import sys
 
   sys.exit(1)  # Terminate the program in case of a fatal error
+
+
 # </editor-fold>
 
 
@@ -375,4 +382,6 @@ def DTLOG_FATAL(message: str) -> None:
   if __debug__:
     DTLOG(FATAL, message)
     sys.exit(1)
+
+
 # </editor-fold>
