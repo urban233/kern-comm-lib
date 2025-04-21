@@ -35,6 +35,7 @@ from abc import ABC, abstractmethod
 
 from kern_comm_lib.base import Status
 from kern_comm_lib.base.log import log_severity
+from kern_comm_lib.base.log.log_formatter import LogFormatter
 
 __docformat__ = "google"
 
@@ -124,12 +125,17 @@ class ConsoleLogHandler(LogHandler):
     _lock: A lock to ensure thread-safe console access.
   """
 
-  def __init__(self) -> None:
-    """Constructor."""
+  def __init__(self, format_pattern: str = None) -> None:
+    """Constructor.
+
+    Args:
+      format_pattern: Optional format string for log messages
+    """
     self._lock = threading.Lock()
+    self._formatter = LogFormatter(format_pattern)
 
   def handle(
-      self, severity: "log_severity.LogSeverity", message: str
+          self, severity: "log_severity.LogSeverity", message: str
   ) -> Status:
     """Writes a log message to the console with color formatting.
 
@@ -142,19 +148,18 @@ class ConsoleLogHandler(LogHandler):
     """
     try:
       color_code = {
-          log_severity.INFO: "\033[0m",  # Default color
-          log_severity.WARNING: "\033[33m",  # Yellow
-          log_severity.ERROR: "\033[31m",  # Red
-          log_severity.FATAL: "\033[35m",  # Magenta
+        log_severity.INFO: "\033[0m",  # Default color
+        log_severity.WARNING: "\033[33m",  # Yellow
+        log_severity.ERROR: "\033[31m",  # Red
+        log_severity.FATAL: "\033[35m",  # Magenta
       }.get(severity, "\033[0m")
 
       reset_code = "\033[0m"  # Reset color
-      formatted_message = (
-          f"{color_code}[{severity.name}] {message}{reset_code}\n"
-      )
+      formatted_message = self._formatter.format(severity, message)
+      formatted_message_with_color = f"{color_code}{formatted_message}{reset_code}\n"
 
       with self._lock:
-        sys.stdout.write(formatted_message)
+        sys.stdout.write(formatted_message_with_color)
         sys.stdout.flush()
       return Status()
     except Exception as e:

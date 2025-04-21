@@ -41,6 +41,7 @@ from kern_comm_lib.base.log.log_severity import FATAL
 from kern_comm_lib.base.log.log_severity import WARNING
 from kern_comm_lib.base.log.log_severity import LogSeverity
 from kern_comm_lib.base.log.logger import Logger
+from kern_comm_lib.base.log.log_formatter import LogFormatter
 
 __docformat__ = "google"
 
@@ -65,9 +66,9 @@ def init_kern_logging(program_name: str, log_dir: str | None = None) -> Status:
   logger = Logger.get_default()
 
   # Always add a console handler to the logger
-  status = logger.add_handler(ConsoleLogHandler())
-  if not status.ok():
-    return status
+  tmp_status = logger.add_handler(ConsoleLogHandler())
+  if not tmp_status.ok():
+    return tmp_status
 
   # Add a file handler if a log directory is provided
   if log_dir is not None:

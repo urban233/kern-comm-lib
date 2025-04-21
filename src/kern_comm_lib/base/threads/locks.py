@@ -57,14 +57,11 @@ class LockInterface(ABC):
     """Releases the lock."""
     pass
 
-  @contextmanager
+
   def __enter__(self):
     """Context manager entry method. Acquires the lock."""
     self.acquire()
-    try:
-      yield self
-    finally:
-      self.release()
+    return self
 
   def __exit__(self, exc_type, exc_val, exc_tb):
     """Context manager exit method. Releases the lock."""
