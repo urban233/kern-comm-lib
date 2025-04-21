@@ -1,5 +1,4 @@
-"""
-Copyright 2025 by Martin Urban.
+"""Copyright 2025 by Martin Urban.
 
 It is unlawful to modify or remove this copyright notice.
 Licensed under the BSD-3-Clause;
@@ -38,8 +37,10 @@ error codes (of type `kern.StatusCode`) enumerated in the status_code
 python module.
 These canonical codes are understood across the codebase.
 """
-from typing import Union, Optional, Any, Callable
+
+from collections.abc import Callable
 from functools import wraps
+from typing import Any
 
 from kern_comm_lib.base.status import status_code
 
@@ -50,9 +51,9 @@ class Status:
   """A class that represents the status of an operation."""
 
   def __init__(
-          self,
-          a_status_code: status_code.StatusCode = status_code.StatusCode.OK,
-          a_message: Optional[str] = None,
+      self,
+      a_status_code: status_code.StatusCode = status_code.StatusCode.OK,
+      a_message: str | None = None,
   ):
     """Constructor.
 
@@ -60,14 +61,14 @@ class Status:
       a_status_code: An optional status code (default: Ok).
       a_message: An optional message describing the status.
     """
-    self._status_code: "status_code.StatusCode" = a_status_code
-    self._message: Optional[str] = a_message
-    self._traceback: Optional[str] = None
+    self._status_code: status_code.StatusCode = a_status_code
+    self._message: str | None = a_message
+    self._traceback: str | None = None
 
   # <editor-fold desc="Alternative constructors">
   @staticmethod
   def from_exception(
-          exception: Exception, include_traceback: bool = True
+      exception: Exception, include_traceback: bool = True
   ) -> "Status":
     """Alternative constructor that creates a Status object from a Python exception.
 
@@ -79,18 +80,18 @@ class Status:
         Status: A Status object with the appropriate status code, message, and optionally traceback.
     """
     tmp_status = Status(
-      status_code.get_status_code_for_exception(exception), str(exception)
+        status_code.get_status_code_for_exception(exception), str(exception)
     )
     if include_traceback:
       tmp_status.set_traceback(
-        status_code.format_exception_traceback(exception)
+          status_code.format_exception_traceback(exception)
       )
     return tmp_status
 
   @staticmethod
   def from_status_code(
-          a_status_code: status_code.StatusCode,
-          a_message: Optional[str] = None,
+      a_status_code: status_code.StatusCode,
+      a_message: str | None = None,
   ) -> "Status":
     """Alternative constructor that creates a Status object from a status code.
 
@@ -102,6 +103,7 @@ class Status:
         A Status object with the specified status code and message.
     """
     return Status(a_status_code, a_message)
+
   # </editor-fold>
 
   # <editor-fold desc="Magic methods">
@@ -114,9 +116,9 @@ class Status:
     if self.ok():
       return "OK"
     return (
-      f"{self._status_code.name}: {self._message}"
-      if self._message
-      else self._status_code.name
+        f"{self._status_code.name}: {self._message}"
+        if self._message
+        else self._status_code.name
     )
 
   # </editor-fold>
@@ -139,7 +141,7 @@ class Status:
     """
     return self._status_code
 
-  def message(self) -> Optional[str]:
+  def message(self) -> str | None:
     """Gets the message.
 
     Returns:
@@ -147,7 +149,7 @@ class Status:
     """
     return self._message
 
-  def traceback(self) -> Optional[str]:
+  def traceback(self) -> str | None:
     """Gets the traceback."""
     return self._traceback
 
@@ -161,25 +163,30 @@ class Status:
         a_traceback: The traceback string.
     """
     self._traceback = a_traceback
+
   # </editor-fold>
   # </editor-fold>
 
 
 # <editor-fold desc="Decorators">
-def use_status(func: Callable[..., Any]) -> Callable[..., Union[Any, Status]]:
+def use_status(func: Callable[..., Any]) -> Callable[..., Any | Status]:
   """Decorator that wraps a function and converts exceptions to StatusOr objects."""
+
   @wraps(func)
-  def wrapper(*args: Any, **kwargs: Any) -> Union[Any, Status]:
+  def wrapper(*args: Any, **kwargs: Any) -> Any | Status:
     try:
       return func(*args, **kwargs)
     except Exception as e:
       return Status.from_exception(e)
+
   return wrapper
+
+
 # </editor-fold>
 
 
 # <editor-fold desc="Error functions">
-def invalid_argument_error(message: Optional[str] = None) -> "Status":
+def invalid_argument_error(message: str | None = None) -> "Status":
   """Creates an invalid argument error status.
 
   Args:
@@ -191,7 +198,7 @@ def invalid_argument_error(message: Optional[str] = None) -> "Status":
   return Status(status_code.StatusCode.INVALID_ARGUMENT, message)
 
 
-def not_found_error(message: Optional[str] = None) -> "Status":
+def not_found_error(message: str | None = None) -> "Status":
   """Creates a not found error status.
 
   Args:
@@ -203,7 +210,7 @@ def not_found_error(message: Optional[str] = None) -> "Status":
   return Status(status_code.StatusCode.NOT_FOUND, message)
 
 
-def zero_division_error(message: Optional[str] = None) -> "Status":
+def zero_division_error(message: str | None = None) -> "Status":
   """Creates a zero division error status.
 
   Args:
@@ -213,4 +220,6 @@ def zero_division_error(message: Optional[str] = None) -> "Status":
       Status: A Status object with the ZERO_DIVISION error code and message.
   """
   return Status(status_code.StatusCode.ZERO_DIVISION, message)
+
+
 # </editor-fold>

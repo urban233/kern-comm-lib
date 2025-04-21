@@ -1,18 +1,30 @@
-"""
-#A* -------------------------------------------------------------------
-#B* This file contains source code for running automation tasks related
-#-* to the build process of the Kern - Common Python Libraries project.
-#C* Copyright 2025 by Martin Urban.
-#D* -------------------------------------------------------------------
-#E* It is unlawful to modify or remove this copyright notice.
-#F* -------------------------------------------------------------------
-#G* Please see the accompanying LICENSE file for further information.
-#H* -------------------------------------------------------------------
-#I* Additional authors of this source file include:
-#-*
-#-*
-#-*
-#Z* -------------------------------------------------------------------
+"""Copyright 2025 by Martin Urban.
+
+It is unlawful to modify or remove this copyright notice.
+Licensed under the BSD-3-Clause;
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://opensource.org/license/bsd-3-clause
+
+or please see the accompanying LICENSE file for further information.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+---------------------------------------------------------------------------
+File: automations/pytest_kern.py
+---------------------------------------------------------------------------
+
+This file defines the way pytest is run over the source code.
 """
 import pathlib
 import subprocess
@@ -20,18 +32,25 @@ import subprocess
 import build_kern
 import const
 
+__docformat__ = "google"
+
 
 def pytest() -> None:
+  """Checks the Python source code using pytest."""
   build_kern.build()
   subprocess.run(
-    [const.PIP_FILEPATH, "install", "--force-reinstall", pathlib.Path(f"./dist/kern_comm_lib-{const.PROJECT_VERSION}-py3-none-any.whl")],
-    cwd=const.PROJECT_ROOT_DIR
+    [
+      const.PIP_FILEPATH,
+      "install",
+      "--force-reinstall",
+      pathlib.Path(
+        f"./dist/kern_comm_lib-{const.PROJECT_VERSION}-py3-none-any.whl"
+      ),
+    ],
+    cwd=const.PROJECT_ROOT_DIR, check=False,
   )
-  subprocess.run(
-    [const.PYTEST_FILEPATH],
-    cwd=const.PROJECT_ROOT_DIR
-  )
+  subprocess.run([const.PYTEST_FILEPATH], cwd=const.PROJECT_ROOT_DIR, check=False)
   subprocess.run(
     [const.PIP_FILEPATH, "uninstall", "-y", "kern-comm-lib"],
-    cwd=const.PROJECT_ROOT_DIR
+    cwd=const.PROJECT_ROOT_DIR, check=False,
   )

@@ -1,5 +1,4 @@
-"""
-Copyright 2025 by Martin Urban.
+"""Copyright 2025 by Martin Urban.
 
 It is unlawful to modify or remove this copyright notice.
 Licensed under the BSD-3-Clause;
@@ -41,10 +40,11 @@ The class uses the DCHECK_ functions from the `base.log.check` module to do any
 argument checks. To disable the checks, the -O flag needs to be set when running
 the Python interpreter.
 """
+
 import enum
 import pathlib
 import shutil
-from typing import Optional, Union, List
+from typing import Union
 
 import kern_comm_lib as kern
 
@@ -53,6 +53,7 @@ __docformat__ = "google"
 
 class FilesystemModes(enum.IntEnum):
   """Enum for file and directory permissions."""
+
   ALL_RWX = 0o777
   """Full permissions (read, write, execute) for owner, group, and others"""
   ALL_RW = 0o666
@@ -78,10 +79,7 @@ class FilesystemModes(enum.IntEnum):
 class KPath:
   """Path class that wraps pathlib.Path and returns status objects instead of raising exceptions."""
 
-  def __init__(
-          self,
-          a_path: Union[str, pathlib.Path, 'KPath']
-  ) -> None:
+  def __init__(self, a_path: Union[str, pathlib.Path, "KPath"]) -> None:
     """Constructor.
 
     Args:
@@ -115,6 +113,7 @@ class KPath:
       The representation of the path.
     """
     return f"KPath({repr(self._path)})"
+
   # </editor-fold>
 
   # <editor-fold desc="Getter methods">
@@ -126,7 +125,7 @@ class KPath:
       The underlying pathlib.Path object.
     """
     return self._path
-  
+
   @property
   def name(self) -> str:
     """Gets the name of the file or directory.
@@ -137,7 +136,7 @@ class KPath:
     return self._path.name
 
   @property
-  def parent(self) -> 'KPath':
+  def parent(self) -> "KPath":
     """Gets the parent directory as KPath.
 
     Returns:
@@ -162,6 +161,7 @@ class KPath:
       The filename without extension.
     """
     return self._path.stem
+
   # </editor-fold>
 
   def exists(self) -> kern.AStatusOrElse[bool]:
@@ -200,10 +200,7 @@ class KPath:
   # Path operations
 
   def mkdir(
-          self,
-          mode: int = 0o777,
-          parents: bool = False,
-          exist_ok: bool = False
+      self, mode: int = 0o777, parents: bool = False, exist_ok: bool = False
   ) -> kern.Status:
     """Creates a directory at this path.
 
@@ -226,8 +223,8 @@ class KPath:
       return kern.Status()
     except FileExistsError:
       return kern.Status.from_status_code(
-        kern.StatusCode.ALREADY_EXISTS,
-        f"Directory already exists: {self._path}"
+          kern.StatusCode.ALREADY_EXISTS,
+          f"Directory already exists: {self._path}",
       )
     except Exception as e:
       return kern.Status.from_exception(e)
@@ -313,7 +310,9 @@ class KPath:
     except Exception as e:
       return kern.Status.from_exception(e)
 
-  def read_text(self, encoding: str = 'utf-8', errors: Optional[str] = None) -> kern.AStatusOrElse[str]:
+  def read_text(
+      self, encoding: str = "utf-8", errors: str | None = None
+  ) -> kern.AStatusOrElse[str]:
     """Reads text from this file.
 
     Args:
@@ -353,7 +352,9 @@ class KPath:
     except Exception as e:
       return kern.Status.from_exception(e)
 
-  def write_text(self, data: str, encoding: str = 'utf-8', errors: Optional[str] = None) -> kern.Status:
+  def write_text(
+      self, data: str, encoding: str = "utf-8", errors: str | None = None
+  ) -> kern.Status:
     """Writes text to this file.
 
     Args:
@@ -378,7 +379,7 @@ class KPath:
 
   # Directory operations
 
-  def iterdir(self) -> kern.AStatusOrElse[List['KPath']]:
+  def iterdir(self) -> kern.AStatusOrElse[list["KPath"]]:
     """Iterates over the files in this directory.
 
     Returns:
@@ -389,6 +390,8 @@ class KPath:
     except FileNotFoundError:
       return kern.status.not_found_error(f"Directory not found: {self._path}")
     except NotADirectoryError:
-      return kern.status.invalid_argument_error(f"Not a directory: {self._path}")
+      return kern.status.invalid_argument_error(
+          f"Not a directory: {self._path}"
+      )
     except Exception as e:
       return kern.Status.from_exception(e)

@@ -1,18 +1,45 @@
-"""Module that contains the canonical status codes for the Kern - Common Python Libraries project."""
-# A* -------------------------------------------------------------------
-# B* This file contains source code for the Kern - Common Python
-# -* Libraries project
-# C* Copyright 2025 by Martin Urban.
-# D* -------------------------------------------------------------------
-# E* It is unlawful to modify or remove this copyright notice.
-# F* -------------------------------------------------------------------
-# G* Please see the accompanying LICENSE file for further information.
-# H* -------------------------------------------------------------------
-# I* Additional authors of this source file include:
-# -*
-# -*
-# -*
-# Z* -------------------------------------------------------------------
+"""Copyright 2025 by Martin Urban.
+
+It is unlawful to modify or remove this copyright notice.
+Licensed under the BSD-3-Clause;
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://opensource.org/license/bsd-3-clause
+
+or please see the accompanying LICENSE file for further information.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+---------------------------------------------------------------------------
+File: base/status/status_code.py
+---------------------------------------------------------------------------
+
+This file contains the canonical status codes for the Kern - Common Python
+Libraries project.
+
+These status codes are used to represent the status of an operation
+instead of using exceptions.
+
+The status codes from 0 to 16 are the canonical error codes defined by Google.
+The status codes from 100 and above are the Python standard error codes.
+The Python standard error codes can be mapped to the corresponding
+Python exceptions.
+
+The status codes starting from 200 are custom error codes that can be
+defined freely by the user. Please subclass the StatusCode class and
+add any custom error codes you need.
+"""
+
 import enum
 import traceback
 
@@ -23,6 +50,7 @@ class StatusCode(enum.IntEnum):
   Includes Google canonical error codes (0-16), custom codes, and Python standard
   error codes (100+).
   """
+
   # <editor-fold desc="Google canonical error codes">
   OK = 0
   CANCELLED = 1
@@ -41,9 +69,6 @@ class StatusCode(enum.IntEnum):
   UNAVAILABLE = 14
   DATA_LOSS = 15
   UNAUTHENTICATED = 16
-  # </editor-fold>
-  # <editor-fold desc="Custom error codes">
-  ZERO_DIVISION = -1
   # </editor-fold>
   # <editor-fold desc="Python standard error codes (100+)">
   ARITHMETIC_ERROR = 100
@@ -98,61 +123,64 @@ class StatusCode(enum.IntEnum):
   VALUE_ERROR = 149
   ZERO_DIVISION_ERROR = 150
   # </editor-fold>
+  # <editor-fold desc="Custom error codes">
+  ZERO_DIVISION = 200
+  # </editor-fold>
 
 
 # Exception to StatusCode mapping
 EXCEPTION_TO_STATUS_CODE = {
-  ArithmeticError: StatusCode.ARITHMETIC_ERROR,
-  AssertionError: StatusCode.ASSERTION_ERROR,
-  AttributeError: StatusCode.ATTRIBUTE_ERROR,
-  BlockingIOError: StatusCode.BLOCKING_IO_ERROR,
-  BrokenPipeError: StatusCode.BROKEN_PIPE_ERROR,
-  BufferError: StatusCode.BUFFER_ERROR,
-  ChildProcessError: StatusCode.CHILD_PROCESS_ERROR,
-  ConnectionAbortedError: StatusCode.CONNECTION_ABORTED_ERROR,
-  ConnectionError: StatusCode.CONNECTION_ERROR,
-  ConnectionRefusedError: StatusCode.CONNECTION_REFUSED_ERROR,
-  ConnectionResetError: StatusCode.CONNECTION_RESET_ERROR,
-  EOFError: StatusCode.EOF_ERROR,
-  FileExistsError: StatusCode.FILE_EXISTS_ERROR,
-  FileNotFoundError: StatusCode.FILE_NOT_FOUND_ERROR,
-  FloatingPointError: StatusCode.FLOATING_POINT_ERROR,
-  GeneratorExit: StatusCode.GENERATOR_EXIT,
-  ImportError: StatusCode.IMPORT_ERROR,
-  IndentationError: StatusCode.INDENTATION_ERROR,
-  IndexError: StatusCode.INDEX_ERROR,
-  InterruptedError: StatusCode.INTERRUPTED_ERROR,
-  IsADirectoryError: StatusCode.IS_A_DIRECTORY_ERROR,
-  KeyError: StatusCode.KEY_ERROR,
-  KeyboardInterrupt: StatusCode.KEYBOARD_INTERRUPT,
-  LookupError: StatusCode.LOOKUP_ERROR,
-  MemoryError: StatusCode.MEMORY_ERROR,
-  ModuleNotFoundError: StatusCode.MODULE_NOT_FOUND_ERROR,
-  NameError: StatusCode.NAME_ERROR,
-  NotADirectoryError: StatusCode.NOT_A_DIRECTORY_ERROR,
-  NotImplementedError: StatusCode.NOT_IMPLEMENTED_ERROR,
-  OSError: StatusCode.OS_ERROR,
-  OverflowError: StatusCode.OVERFLOW_ERROR,
-  PermissionError: StatusCode.PERMISSION_ERROR,
-  ProcessLookupError: StatusCode.PROCESS_LOOKUP_ERROR,
-  RecursionError: StatusCode.RECURSION_ERROR,
-  ReferenceError: StatusCode.REFERENCE_ERROR,
-  RuntimeError: StatusCode.RUNTIME_ERROR,
-  StopAsyncIteration: StatusCode.STOP_ASYNC_ITERATION,
-  StopIteration: StatusCode.STOP_ITERATION,
-  SyntaxError: StatusCode.SYNTAX_ERROR,
-  SystemError: StatusCode.SYSTEM_ERROR,
-  SystemExit: StatusCode.SYSTEM_EXIT,
-  TabError: StatusCode.TAB_ERROR,
-  TimeoutError: StatusCode.TIMEOUT_ERROR,
-  TypeError: StatusCode.TYPE_ERROR,
-  UnboundLocalError: StatusCode.UNBOUND_LOCAL_ERROR,
-  UnicodeDecodeError: StatusCode.UNICODE_DECODE_ERROR,
-  UnicodeEncodeError: StatusCode.UNICODE_ENCODE_ERROR,
-  UnicodeError: StatusCode.UNICODE_ERROR,
-  UnicodeTranslateError: StatusCode.UNICODE_TRANSLATE_ERROR,
-  ValueError: StatusCode.VALUE_ERROR,
-  ZeroDivisionError: StatusCode.ZERO_DIVISION_ERROR,
+    ArithmeticError: StatusCode.ARITHMETIC_ERROR,
+    AssertionError: StatusCode.ASSERTION_ERROR,
+    AttributeError: StatusCode.ATTRIBUTE_ERROR,
+    BlockingIOError: StatusCode.BLOCKING_IO_ERROR,
+    BrokenPipeError: StatusCode.BROKEN_PIPE_ERROR,
+    BufferError: StatusCode.BUFFER_ERROR,
+    ChildProcessError: StatusCode.CHILD_PROCESS_ERROR,
+    ConnectionAbortedError: StatusCode.CONNECTION_ABORTED_ERROR,
+    ConnectionError: StatusCode.CONNECTION_ERROR,
+    ConnectionRefusedError: StatusCode.CONNECTION_REFUSED_ERROR,
+    ConnectionResetError: StatusCode.CONNECTION_RESET_ERROR,
+    EOFError: StatusCode.EOF_ERROR,
+    FileExistsError: StatusCode.FILE_EXISTS_ERROR,
+    FileNotFoundError: StatusCode.FILE_NOT_FOUND_ERROR,
+    FloatingPointError: StatusCode.FLOATING_POINT_ERROR,
+    GeneratorExit: StatusCode.GENERATOR_EXIT,
+    ImportError: StatusCode.IMPORT_ERROR,
+    IndentationError: StatusCode.INDENTATION_ERROR,
+    IndexError: StatusCode.INDEX_ERROR,
+    InterruptedError: StatusCode.INTERRUPTED_ERROR,
+    IsADirectoryError: StatusCode.IS_A_DIRECTORY_ERROR,
+    KeyError: StatusCode.KEY_ERROR,
+    KeyboardInterrupt: StatusCode.KEYBOARD_INTERRUPT,
+    LookupError: StatusCode.LOOKUP_ERROR,
+    MemoryError: StatusCode.MEMORY_ERROR,
+    ModuleNotFoundError: StatusCode.MODULE_NOT_FOUND_ERROR,
+    NameError: StatusCode.NAME_ERROR,
+    NotADirectoryError: StatusCode.NOT_A_DIRECTORY_ERROR,
+    NotImplementedError: StatusCode.NOT_IMPLEMENTED_ERROR,
+    OSError: StatusCode.OS_ERROR,
+    OverflowError: StatusCode.OVERFLOW_ERROR,
+    PermissionError: StatusCode.PERMISSION_ERROR,
+    ProcessLookupError: StatusCode.PROCESS_LOOKUP_ERROR,
+    RecursionError: StatusCode.RECURSION_ERROR,
+    ReferenceError: StatusCode.REFERENCE_ERROR,
+    RuntimeError: StatusCode.RUNTIME_ERROR,
+    StopAsyncIteration: StatusCode.STOP_ASYNC_ITERATION,
+    StopIteration: StatusCode.STOP_ITERATION,
+    SyntaxError: StatusCode.SYNTAX_ERROR,
+    SystemError: StatusCode.SYSTEM_ERROR,
+    SystemExit: StatusCode.SYSTEM_EXIT,
+    TabError: StatusCode.TAB_ERROR,
+    TimeoutError: StatusCode.TIMEOUT_ERROR,
+    TypeError: StatusCode.TYPE_ERROR,
+    UnboundLocalError: StatusCode.UNBOUND_LOCAL_ERROR,
+    UnicodeDecodeError: StatusCode.UNICODE_DECODE_ERROR,
+    UnicodeEncodeError: StatusCode.UNICODE_ENCODE_ERROR,
+    UnicodeError: StatusCode.UNICODE_ERROR,
+    UnicodeTranslateError: StatusCode.UNICODE_TRANSLATE_ERROR,
+    ValueError: StatusCode.VALUE_ERROR,
+    ZeroDivisionError: StatusCode.ZERO_DIVISION_ERROR,
 }
 
 
@@ -188,8 +216,10 @@ def format_exception_traceback(exception: Exception) -> str:
       A formatted string containing the traceback information
   """
   return "".join(
-    traceback.format_exception(
-      type(exception), exception, exception.__traceback__
-    )
+      traceback.format_exception(
+          type(exception), exception, exception.__traceback__
+      )
   )
+
+
 # </editor-fold>

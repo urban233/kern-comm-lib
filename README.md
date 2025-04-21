@@ -26,7 +26,7 @@ pip install kern-comm-lib
 
 ## Contributing 🤝
 Contributions are welcome! 
-Be aware that this project uses ruff as a linter and formatter,
+Be aware that this project uses ruff as a linter pyink as a formatter,
 and pyright as a type checker.
 
 ## License 📜

@@ -20,35 +20,71 @@ homepage = "https://github.com/urban233/kern-comm-lib"
 repository = "https://github.com/urban233/kern-comm-lib"
 
 [tool.ruff]
-# Exclude a variety of commonly ignored directories.
+# Target Python version - matches Python 3.10 features and syntax
+target-version = "py310"
+# Maximum line length to match common Python style guides
+line-length = 80
+# Custom exclusion patterns for files and directories
 exclude = [
     "__init__.py",
 ]
-line-length = 80
-indent-width = 2
+# Directories to exclude from linting
+extend-exclude = [".venv/", "docs"]
 
 [tool.ruff.lint]
-# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 select = [
-    "F401",  # unused-import
-    "D208",  # Docstring is over-indented
-    #  "E501",  #  Line too long (x > 80)
-    "ANN201",  #  Missing return type annotation for public function
-    "D212",  #  Multi-line docstring summary should start at the first line
-    "A003",  # builtin-attribute-shadowing
-    "W291",  # trailing-whitespace
-    "PTH110",  # `os.path.exists()` should be replaced by `pathlib.Path.exists()`
-    "Q000",   # Single quotes found but double quotes preferred
+    "E",    # pycodestyle errors (PEP 8 style guide enforcement)
+    "F",    # pyflakes (detects logical errors and undefined names)
+    "B",    # flake8-bugbear (detects likely bugs and design problems)
+    "I",    # isort (sorts imports alphabetically and by sections)
+    "C4",   # flake8-comprehensions (better list/dict/set comprehensions)
+    "PL",   # pylint rules (general Python linting rules)
+    "PD",   # pandas-vet (best practices for pandas usage)
+    "NPY",  # NumPy-specific checks (proper NumPy API usage)
+    "D",    # pydocstyle (documentation style enforcement)
+    "UP",   # pyupgrade (upgrade syntax to newer Python)
+    "TID",  # typeid (type identifier validation)
+    "TCH",  # type-checking (static type checking assistance)
+    "SIM",  # simplify (code simplification suggestions)
 ]
-ignore = []
-# Allow fix for all enabled rules (when `--fix`) is provided.
-# Full list of rules: https://docs.astral.sh/ruff/rules/
-fixable = ["D208", "W291", "PTH110"]
-unfixable = []
+ignore = [
+    "D203",  # one-blank-line-before-class (conflicts with Google style)
+    "D213",  # multi-line-summary-second-line (conflicts with Google style)
+    "E501",  # line-too-long (already handled by pyink formatter)
+    "B011",  # assert-false (raising an exception is not preferred in a no-exception context)
+]
 
-[tool.ruff.format]
-indent-style = "space"
+# isort configuration for import sorting
+[tool.ruff.lint.isort]
+# Define project-specific modules to handle import sorting correctly
+known-first-party = ["src", "automations"]
+
+# pydocstyle configuration for docstring formatting
+[tool.ruff.lint.pydocstyle]
+# Use Google-style docstrings as seen in the codebase
+convention = "google"
+
+# McCabe complexity checker configuration
+[tool.ruff.lint.mccabe]
+# Maximum cyclomatic complexity allowed for functions
+max-complexity = 15
+
+# Pylint configuration options
+[tool.ruff.lint.pylint]
+# Maximum number of arguments allowed in a function
+max-args = 6
+# Maximum number of branches allowed in a function
+max-branches = 12
+# Maximum number of statements allowed in a function
+max-statements = 50
+
+[tool.pyink]
+line-length = 80
+target-version = ['py310']
+pyink-indentation = 2
 
 [tool.pyright]
 include = ["src/kern_comm_lib"]
 ignore = ["automations"]
+# Don't require type stub files (*.pyi) for all imports
+reportMissingTypeStubs = false

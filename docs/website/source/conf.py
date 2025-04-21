@@ -11,21 +11,22 @@ sys.path.insert(0, os.path.abspath("..\\..\\..\\src"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'kern-comm-lib'
-copyright = '2025, Martin Urban'
-author = 'Martin Urban'
-release = '0.0.1'
+project = "kern-comm-lib"
+copyright = "2025, Martin Urban"
+author = "Martin Urban"
+release = "0.0.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.napoleon",
-              "sphinx.ext.autodoc",
-              "sphinx.ext.autosummary"]
+extensions = [
+  "sphinx.ext.napoleon",
+  "sphinx.ext.autodoc",
+  "sphinx.ext.autosummary",
+]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
-
 
 
 # -- Options for HTML output -------------------------------------------------

@@ -1,5 +1,4 @@
-"""
-#A* -------------------------------------------------------------------
+"""#A* -------------------------------------------------------------------
 #B* This file contains source code for running automation tasks related
 #-* to the build process of the Kern - Common Python Libraries project.
 #C* Copyright 2025 by Martin Urban.
@@ -14,5 +13,6 @@
 #-*
 #Z* -------------------------------------------------------------------
 """
-from kern_comm_lib.base import *
+
 from kern_comm_lib import filesystem
+from kern_comm_lib.base import *

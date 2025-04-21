@@ -1,5 +1,4 @@
-"""
-Copyright 2025 by Martin Urban.
+"""Copyright 2025 by Martin Urban.
 
 It is unlawful to modify or remove this copyright notice.
 Licensed under the BSD-3-Clause;
@@ -34,9 +33,12 @@ three boolean variables:
 These variables should be used to write platform-specific code.
 
 """
+
 import platform
 
 __docformat__ = "google"
+
+import sys
 
 
 def invalid_platform() -> int:
@@ -69,5 +71,5 @@ elif platform.system() == "Linux":
   IS_DARWIN = False
   IS_LINUX = True
 else:
-  exit(invalid_platform())
+  sys.exit(invalid_platform())
 # </editor-fold>

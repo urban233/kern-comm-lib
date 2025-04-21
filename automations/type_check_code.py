@@ -21,16 +21,22 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ---------------------------------------------------------------------------
-File: automations/build_kern.py
+File: automations/type_check_code.py
 ---------------------------------------------------------------------------
 
-This file defines the build process for the kern library using Poetry.
+This file defines how the static type checker pyright is run over the source
+code.
 """
+import pathlib
 import subprocess
 
 import const
 
+__docformat__ = "google"
 
-def build() -> None:
-  """Builds the kern package."""
-  subprocess.run([const.POETRY_FILEPATH, "build"], cwd=const.PROJECT_ROOT_DIR, check=False)
+
+def type_check_python_code() -> None:
+  """Runs the static type checker pyright over the Python source code."""
+  subprocess.check_call(
+    [const.PYRIGHT_FILEPATH], cwd=pathlib.Path(const.PROJECT_ROOT_DIR)
+  )

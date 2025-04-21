@@ -8,7 +8,6 @@
 from kern_comm_lib.filesystem.kpath import KPath
 
 
-
 # T = TypeVar('T')
 #
 #

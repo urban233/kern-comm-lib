@@ -21,16 +21,22 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ---------------------------------------------------------------------------
-File: automations/build_kern.py
+File: automations/format_code.py
 ---------------------------------------------------------------------------
 
-This file defines the build process for the kern library using Poetry.
+This file defines the way the pyink formatter is run over the source code.
 """
+import pathlib
 import subprocess
 
 import const
 
+__docformat__ = "google"
 
-def build() -> None:
-  """Builds the kern package."""
-  subprocess.run([const.POETRY_FILEPATH, "build"], cwd=const.PROJECT_ROOT_DIR, check=False)
+
+def format_python_code() -> None:
+  """Checks the Python source code using ruff."""
+  subprocess.check_call(
+    [const.PYINK_FILEPATH, "src"],
+    cwd=pathlib.Path(const.PROJECT_ROOT_DIR),
+  )

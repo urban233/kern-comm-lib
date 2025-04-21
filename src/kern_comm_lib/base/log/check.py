@@ -1,5 +1,4 @@
-"""
-Copyright 2025 by Martin Urban.
+"""Copyright 2025 by Martin Urban.
 
 It is unlawful to modify or remove this copyright notice.
 Licensed under the BSD-3-Clause;
@@ -45,15 +44,18 @@ at a particular place with a useful message and backtrace than to assume some
 ultimately unspecified and unreliable crashing behavior
 (such as a "segmentation fault").
 """
-import enum
+
+import enum  # noqa: TC003 (False positive because it's needed at runtime)
 import inspect
 import sys
-from typing import Callable, Optional, Type
+from collections.abc import Callable
 
 # TODO: Add CHECK functions here
 
-def DCHECK(condition: Callable[[], bool],
-           message: Optional[Callable[[], str]] = None) -> None:
+
+def DCHECK(
+    condition: Callable[[], bool], message: Callable[[], str] | None = None
+) -> None:
   """Debug-only check removed in optimized mode.
 
   `DCHECK` behaves like `CHECK` in debug mode and does nothing otherwise (as
@@ -74,7 +76,7 @@ def DCHECK(condition: Callable[[], bool],
     In production, use more specific DCHECK functions like DCHECK_EQ or DCHECK_NOT_EQ
     for simple comparisons.
   """
-  if __debug__:
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     # Evaluate the condition lazily only in debug mode
     if not condition():
       # Get caller's frame information which cannot be placed in its own
@@ -84,12 +86,12 @@ def DCHECK(condition: Callable[[], bool],
       lineno = frame.f_lineno
       # Print the fatal error and exit
       print(f"FATAL ERROR: {filename}:{lineno}: {message()}", file=sys.stderr)
-      exit(1)
+      sys.exit(1)
 
 
-def DCHECK_EQ(arg1: object, arg2: object):
+def DCHECK_EQ(arg1: object, arg2: object) -> None:
   """Checks if two values are equal."""
-  if __debug__:
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     if arg1 != arg2:
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
@@ -99,17 +101,20 @@ def DCHECK_EQ(arg1: object, arg2: object):
         if frame is not None:
           filename = frame.f_code.co_filename
           lineno = frame.f_lineno
-          print(f"FATAL ERROR: {filename}:{lineno}: {arg1} is NOT equal to {arg2}", file=sys.stderr)
+          print(
+              f"FATAL ERROR: {filename}:{lineno}: {arg1} is NOT equal to {arg2}",
+              file=sys.stderr,
+          )
         else:
           print("FATAL ERROR: Caller frame is None", file=sys.stderr)
       else:
         print("FATAL ERROR: Current frame is None", file=sys.stderr)
-      exit(1)
+      sys.exit(1)
 
 
-def DCHECK_NOT_EQ(arg1: object, arg2: object):
+def DCHECK_NOT_EQ(arg1: object, arg2: object) -> None:
   """Checks if two values are equal."""
-  if __debug__:
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     if arg1 == arg2:
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
@@ -117,13 +122,16 @@ def DCHECK_NOT_EQ(arg1: object, arg2: object):
       filename = frame.f_code.co_filename
       lineno = frame.f_lineno
       # Print the fatal error and exit
-      print(f"FATAL ERROR: {filename}:{lineno}: {arg1} is equal to {arg2}", file=sys.stderr)
-      exit(1)
+      print(
+          f"FATAL ERROR: {filename}:{lineno}: {arg1} is equal to {arg2}",
+          file=sys.stderr,
+      )
+      sys.exit(1)
 
 
-def DCHECK_NOT_NONE(val: object):
+def DCHECK_NOT_NONE(val: object) -> None:
   """Checks if a value is not None."""
-  if __debug__:
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     if val is None:
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
@@ -131,20 +139,25 @@ def DCHECK_NOT_NONE(val: object):
       filename = frame.f_code.co_filename
       lineno = frame.f_lineno
       # Print the fatal error and exit
-      print(f"FATAL ERROR: {filename}:{lineno}: Value should not be None", file=sys.stderr)
-      exit(1)
+      print(
+          f"FATAL ERROR: {filename}:{lineno}: Value should not be None",
+          file=sys.stderr,
+      )
+      sys.exit(1)
 
 
-def DCHECK_IN_ENUM(a_val: object, an_enum_class: Type['enum.IntEnum']) -> None:
+def DCHECK_IN_ENUM(a_val: object, an_enum_class: type["enum.IntEnum"]) -> None:
   """Debug-only check that verifies if a value is a member of the specified enum.
 
   Args:
       a_val: The value to check
       an_enum_class: The enum class to check against
   """
-  if __debug__:
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
     try:
-      an_enum_class(a_val)  # This will raise ValueError if val is not in the enum
+      an_enum_class(
+          a_val
+      )  # This will raise ValueError if val is not in the enum
     except ValueError:
       # Get caller's frame information which cannot be placed in its own
       # function because it would use the wrong function's frame!
@@ -152,7 +165,11 @@ def DCHECK_IN_ENUM(a_val: object, an_enum_class: Type['enum.IntEnum']) -> None:
       filename = frame.f_code.co_filename
       lineno = frame.f_lineno
       # Print the fatal error and exit
-      print(f"FATAL ERROR: {filename}:{lineno}: Value {a_val} is not a valid member of enum {an_enum_class.__name__}", file=sys.stderr)
-      exit(1)
+      print(
+          f"FATAL ERROR: {filename}:{lineno}: Value {a_val} is not a valid member of enum {an_enum_class.__name__}",
+          file=sys.stderr,
+      )
+      sys.exit(1)
+
 
 # TODO: Add more DCHECK functions here

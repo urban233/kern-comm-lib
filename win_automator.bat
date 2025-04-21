@@ -1,3 +1,4 @@
+@echo off
 REM A* -------------------------------------------------------------------
 REM B* A simple wrapper script for running automation tasks more smoothly
 REM -* without needing to know the exact python interpreter path
