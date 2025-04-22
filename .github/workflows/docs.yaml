@@ -22,6 +22,12 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material mkdocstrings mkdocstrings-python
+      - name: Build kern library
+        run: |
+          pip install poetry
+          poetry build
+          pip install .\dist\kern_comm_lib-0.0.2-py3-none-any.whl
+
       - name: Deploy to GitHub Pages
         working-directory: ./docs/website
         run: |
