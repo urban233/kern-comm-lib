@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/urban233/kern-comm-lib"
+homepage = "https://urban233.github.io/kern-comm-lib/"
 repository = "https://github.com/urban233/kern-comm-lib"
 
 [tool.ruff]

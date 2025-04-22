@@ -29,11 +29,16 @@ nav:
         - api_reference/filesystem/index.md
         - api_reference/filesystem/kpath.md
 theme:
+  # Base color: #406ee2 (Kern blue)
   name: material
   language: en
   logo: assets/logo_wide.png
   favicon: assets/logo.png
-  # #406ee2
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.path
+    - toc.integrate
   font:
     text: Roboto
     code: Roboto Mono
