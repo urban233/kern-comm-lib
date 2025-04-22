@@ -49,7 +49,11 @@ def pytest() -> None:
     ],
     cwd=const.PROJECT_ROOT_DIR, check=False,
   )
-  subprocess.run([const.PYTEST_FILEPATH], cwd=const.PROJECT_ROOT_DIR, check=False)
+  subprocess.run(
+    [const.PYTEST_FILEPATH],
+    cwd=pathlib.Path(const.PROJECT_ROOT_DIR / "tests"),
+    check=False
+  )
   subprocess.run(
     [const.PIP_FILEPATH, "uninstall", "-y", "kern-comm-lib"],
     cwd=const.PROJECT_ROOT_DIR, check=False,

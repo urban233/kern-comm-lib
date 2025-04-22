@@ -21,7 +21,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ---------------------------------------------------------------------------
-File: base/log/logger.py
+File: base/log/log_handlers.py
 ---------------------------------------------------------------------------
 
 This file implements two log handlers:
@@ -40,7 +40,7 @@ from kern_comm_lib.base.log.log_formatter import LogFormatter
 __docformat__ = "google"
 
 
-class LogHandler(ABC):
+class ILogHandler(ABC):
   """Abstract base class for log handlers."""
 
   @abstractmethod
@@ -58,8 +58,16 @@ class LogHandler(ABC):
     """
     pass
 
+  def close(self) -> Status:
+    """Closes the log handler.
 
-class FileLogHandler(LogHandler):
+    This method should be overridden by subclasses to implement any necessary
+    cleanup operations when the handler is no longer needed.
+    """
+    return Status()
+
+
+class FileLogHandler(ILogHandler):
   """Log handler that writes log messages to a file.
 
   Attributes:
@@ -73,17 +81,16 @@ class FileLogHandler(LogHandler):
 
     Args:
       file_path: The path to the log file.
-
-    Raises:
-        RuntimeError: If the log file cannot be opened.
-        # TODO: Change to Status
     """
     self.file_path = file_path
     self._lock = threading.Lock()
     try:
-      self.file = open(self.file_path, "a")
+      # self.file should contain the file object, therefore opening the
+      # file_path using a context manager is not applicable here.
+      self.file = open(self.file_path, "a")  # noqa: SIM115 (see above)
     except Exception as e:
-      raise RuntimeError(f"Failed to open log file: {str(e)}")
+      print(f"Failed to open log file: {str(e)}")
+      sys.exit(1)
 
   def handle(
       self, severity: "log_severity.LogSeverity", message: str
@@ -105,7 +112,7 @@ class FileLogHandler(LogHandler):
     except Exception as e:
       return Status.from_exception(e)
 
-  def close(self) -> None:
+  def close(self) -> Status:
     """Closes the log file.
 
     Ensures that the file is properly closed, even if an exception occurs.
@@ -113,19 +120,19 @@ class FileLogHandler(LogHandler):
     with self._lock:
       try:
         self.file.close()
-      except Exception:
-        pass
-      # TODO: Add status
+        return Status()
+      except Exception as e:
+        return Status.from_exception(e)
 
 
-class ConsoleLogHandler(LogHandler):
+class ConsoleLogHandler(ILogHandler):
   """Log handler that writes log messages to the console.
 
   Attributes:
     _lock: A lock to ensure thread-safe console access.
   """
 
-  def __init__(self, format_pattern: str = None) -> None:
+  def __init__(self, format_pattern: str | None = None) -> None:
     """Constructor.
 
     Args:

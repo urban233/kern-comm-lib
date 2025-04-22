@@ -186,6 +186,87 @@ def DCHECK_NOT_NONE(val: object) -> None:
       sys.exit(1)
 
 
+def DCHECK_LESS_THAN(val: int | float, cond_val: int | float) -> None:
+  """Checks if a value is less than a certain conditional value."""
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
+    if val < cond_val:
+      # <editor-fold desc="Gets caller's frame information">
+      # Get caller's frame information which cannot be placed in its own
+      # function because it would use the wrong function's frame!
+      current_frame = inspect.currentframe()
+      if current_frame is None:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      filename = frame.f_code.co_filename
+      lineno = frame.f_lineno
+      # </editor-fold>
+      print(
+          f"FATAL ERROR: {filename}:{lineno}: Value MUST be less than {cond_val}",
+          file=sys.stderr,
+      )
+      sys.exit(1)
+
+
+def DCHECK_GREATER_THAN(val: int | float, cond_val: int | float) -> None:
+  """Checks if a value is greater than a certain conditional value."""
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
+    if val > cond_val:
+      # <editor-fold desc="Gets caller's frame information">
+      # Get caller's frame information which cannot be placed in its own
+      # function because it would use the wrong function's frame!
+      current_frame = inspect.currentframe()
+      if current_frame is None:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      filename = frame.f_code.co_filename
+      lineno = frame.f_lineno
+      # </editor-fold>
+      print(
+          f"FATAL ERROR: {filename}:{lineno}: Value MUST be greater than {cond_val}",
+          file=sys.stderr,
+      )
+      sys.exit(1)
+
+
+def DCHECK_IS_TYPE(a_val: object, a_type: type) -> None:
+  """Checks if a value is a given type."""
+  if __debug__:  # noqa: SIM102 (Two if statements are needed to avoid lambda evaluation)
+    if not isinstance(a_val, a_type):
+      # <editor-fold desc="Gets caller's frame information">
+      # Get caller's frame information which cannot be placed in its own
+      # function because it would use the wrong function's frame!
+      current_frame = inspect.currentframe()
+      if current_frame is None:
+        print("FATAL ERROR: Current frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      frame = current_frame.f_back
+      if frame is None:
+        print("FATAL ERROR: Caller frame is None", file=sys.stderr)
+        sys.exit(1)
+
+      filename = frame.f_code.co_filename
+      lineno = frame.f_lineno
+      # </editor-fold>
+      print(
+          f"FATAL ERROR: {filename}:{lineno}: Value MUST be of type {type(a_type).__name__}",
+          file=sys.stderr,
+      )
+      sys.exit(1)
+
+
 def DCHECK_IN_ENUM(a_val: object, an_enum_class: type["enum.IntEnum"]) -> None:
   """Debug-only check that verifies if a value is a member of the specified enum.
 

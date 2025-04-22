@@ -44,6 +44,9 @@ from kern_comm_lib.base.log.check import DCHECK_EQ
 from kern_comm_lib.base.log.check import DCHECK_IN_ENUM
 from kern_comm_lib.base.log.check import DCHECK_NOT_EQ
 from kern_comm_lib.base.log.check import DCHECK_NOT_NONE
+from kern_comm_lib.base.log.check import DCHECK_LESS_THAN
+from kern_comm_lib.base.log.check import DCHECK_GREATER_THAN
+from kern_comm_lib.base.log.check import DCHECK_IS_TYPE
 
 from kern_comm_lib.base.log.log_severity import LogSeverity
 from kern_comm_lib.base.log.log_severity import INFO
@@ -55,6 +58,9 @@ from kern_comm_lib.base.log.log_handlers import FileLogHandler
 from kern_comm_lib.base.log.log_handlers import ConsoleLogHandler
 
 from kern_comm_lib.base.log.log import init_kern_logging
+from kern_comm_lib.base.log.log import close_kern_logging
+from kern_comm_lib.base.log.log import init_thread_specific_kern_logging
+from kern_comm_lib.base.log.log import close_thread_specific_kern_logging
 from kern_comm_lib.base.log.log import LOG
 from kern_comm_lib.base.log.log import LOG_INFO
 from kern_comm_lib.base.log.log import LOG_WARNING

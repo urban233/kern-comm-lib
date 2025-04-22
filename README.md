@@ -18,6 +18,7 @@ and features modern error handling with `Status` and `StatusOr` to eliminate run
 ## Features ✨  
 - **Exception-Free Modules**: Predictable error handling without `try/except` sprawl.  
 - **Status & StatusOr**: Modern result types for explicit success/failure handling.
+- **Thread-safe Logging**: Log messages with thread safety and flexibility.
 
 ## Installation ⚙️  
 ```bash

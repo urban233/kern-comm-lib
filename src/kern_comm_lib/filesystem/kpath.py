@@ -241,9 +241,10 @@ class KPath:
     # <editor-fold desc="Checks">
     kern.DCHECK_NOT_NONE(recursive)
     # </editor-fold>
+
     try:
       if recursive:
-        shutil.rmtree(self._path)
+        shutil.rmtree(str(self._path))
       else:
         self._path.rmdir()
       return kern.Status()

@@ -29,7 +29,6 @@ Common Python Libraries project.
 """
 import kern_comm_lib as kern
 
-
 if __name__ == '__main__':
   kern.init_kern_logging("example_logging")
   kern.LOG_INFO("This is an info message")

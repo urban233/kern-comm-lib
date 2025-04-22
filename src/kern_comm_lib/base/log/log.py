@@ -34,15 +34,19 @@ in base/log/log_severity.py.
 import sys
 
 from kern_comm_lib.base import Status
-from kern_comm_lib.base.log.log_handlers import ConsoleLogHandler
-from kern_comm_lib.base.log.log_handlers import FileLogHandler
-from kern_comm_lib.base.log.log_severity import INFO
-from kern_comm_lib.base.log.log_severity import ERROR
-from kern_comm_lib.base.log.log_severity import FATAL
-from kern_comm_lib.base.log.log_severity import WARNING
-from kern_comm_lib.base.log.log_severity import LogSeverity
+from kern_comm_lib.base.log.check import DCHECK_NOT_NONE
+from kern_comm_lib.base.log.log_handlers import (
+    ConsoleLogHandler,
+    FileLogHandler,
+)
+from kern_comm_lib.base.log.log_severity import (
+    ERROR,
+    FATAL,
+    INFO,
+    WARNING,
+    LogSeverity,
+)
 from kern_comm_lib.base.log.logger import Logger
-from kern_comm_lib.base.log.log_formatter import LogFormatter
 
 __docformat__ = "google"
 
@@ -50,17 +54,21 @@ __docformat__ = "google"
 _initialized = False  # Tracks whether the logging system has been initialized
 
 
-def init_kern_logging(program_name: str, log_dir: str | None = None) -> Status:
+def init_kern_logging(program_name: str, log_dir: str = "") -> Status:
   """Initializes the logging system with a default logger and handlers.
 
   Args:
     program_name: The name of the program, used for naming log files.
-    log_dir (default: None): The directory where log files will be stored. If None, no file handler is added.
+    log_dir (default: ""): The directory where log files will be stored. If None, no file handler is added.
 
   Returns:
     A Status object indicating success or failure of the initialization process.
   """
-  global _initialized
+  # <editor-fold desc="Checks">
+  DCHECK_NOT_NONE(log_dir)
+  # </editor-fold>
+
+  global _initialized  # noqa: PLW0603 (module level variable is the simplest way to track initialization)
   if _initialized:
     return Status()  # Return success if already initialized
 
@@ -72,7 +80,7 @@ def init_kern_logging(program_name: str, log_dir: str | None = None) -> Status:
     return tmp_status
 
   # Add a file handler if a log directory is provided
-  if log_dir is not None:
+  if log_dir != "":
     try:
       import os
 
@@ -88,6 +96,75 @@ def init_kern_logging(program_name: str, log_dir: str | None = None) -> Status:
       return Status.from_exception(e)
 
   _initialized = True  # Mark the logging system as initialized
+  return Status()
+
+
+def close_kern_logging() -> Status:
+  """Closes all log handlers and releases resources.
+
+  Returns:
+    A Status object indicating success or failure of the operation.
+  """
+  logger = Logger.get_default()
+  status = logger.close_all_handlers()
+  if not status.ok():
+    return status
+
+  global _initialized  # noqa: PLW0603 (module level variable is the simplest way to track initialization)
+  _initialized = False  # Mark the logging system as uninitialized
+  return Status()
+
+
+def init_thread_specific_kern_logging(log_dir: str = "") -> Status:
+  """Initializes the logging system with a thread-specific logger and handlers.
+
+  Args:
+    log_dir (default: ""): The directory where log files will be stored. If None, no file handler is added.
+
+  Returns:
+    A Status object indicating success or failure of the initialization process.
+  """
+  # <editor-fold desc="Checks">
+  DCHECK_NOT_NONE(log_dir)
+  # </editor-fold>
+
+  logger = Logger.get_thread_logger()
+  # Always add a console handler to the logger
+  tmp_status = logger.add_handler(ConsoleLogHandler())
+  if not tmp_status.ok():
+    return tmp_status
+
+  # Add a file handler if a log directory is provided
+  if log_dir != "":
+    try:
+      import os
+
+      os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
+      log_path = os.path.join(
+          log_dir, f"{logger.name}.log"
+      )  # Construct the log file path
+      file_handler = FileLogHandler(log_path)
+      status = logger.add_handler(file_handler)
+      if not status.ok():
+        return status
+    except Exception as e:
+      return Status.from_exception(e)
+  return Status()
+
+
+def close_thread_specific_kern_logging() -> Status:
+  """Closes all log handlers and releases resources that belong to a thread specific logger.
+
+  Returns:
+    A Status object indicating success or failure of the operation.
+  """
+  logger = Logger.get_thread_logger()
+  status = logger.close_all_handlers()
+  if not status.ok():
+    return status
+
+  global _initialized  # noqa: PLW0603 (module level variable is the simplest way to track initialization)
+  _initialized = False  # Mark the logging system as uninitialized
   return Status()
 
 
@@ -169,6 +246,9 @@ def DLOG(severity: LogSeverity, message: str) -> None:
 
   Notes:
     It exits the program if the logging operation fails.
+    This function returns None if the logging operation is successful. This has
+    to be done instead of a Status object, because if the operation fails
+    the program will be terminated.
   """
   if __debug__:
     tmp_status = Logger.get_default().log(severity, message)
@@ -317,6 +397,9 @@ def DTLOG(severity: LogSeverity, message: str) -> None:
 
   Notes:
     It exits the program if the logging operation fails.
+    This function returns None if the logging operation is successful. This has
+    to be done instead of a Status object, because if the operation fails
+    the program will be terminated.
   """
   if __debug__:
     tmp_status = Logger.get_thread_logger().log(severity, message)

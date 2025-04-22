@@ -30,6 +30,7 @@ defaulting to a specified pattern used by the GLog library (C++).
 
 import datetime
 import inspect
+
 from kern_comm_lib.base.log import log_severity
 
 
@@ -45,7 +46,7 @@ class LogFormatter:
         a default pattern is used that mimics GLog.
   """
 
-  def __init__(self, format_pattern: str = None) -> None:
+  def __init__(self, format_pattern: str | None = None) -> None:
     """Initializes the LogFormatter with a given format pattern.
 
     Args:

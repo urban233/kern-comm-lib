@@ -52,6 +52,7 @@ ignore = [
     "D213",  # multi-line-summary-second-line (conflicts with Google style)
     "E501",  # line-too-long (already handled by pyink formatter)
     "B011",  # assert-false (raising an exception is not preferred in a no-exception context)
+    "PLR2004",  # magic-value-comparison (magic value comparison are done where a constant would make no sense)
 ]
 
 # isort configuration for import sorting
