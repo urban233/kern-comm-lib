@@ -1,25 +1,25 @@
-"""Copyright 2025 by Martin Urban.
-
-It is unlawful to modify or remove this copyright notice.
-Licensed under the BSD-3-Clause;
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     https://opensource.org/license/bsd-3-clause
-
-or please see the accompanying LICENSE file for further information.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
-OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
-IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+# Copyright 2025 by Martin Urban.
+#
+# It is unlawful to modify or remove this copyright notice.
+# Licensed under the BSD-3-Clause;
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://opensource.org/license/bsd-3-clause
+#
+# or please see the accompanying LICENSE file for further information.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+# OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
 ---------------------------------------------------------------------------
 File: base/log/log_handlers.py
 ---------------------------------------------------------------------------
@@ -30,12 +30,12 @@ This file implements two log handlers:
 """
 
 import sys
-import threading
 from abc import ABC, abstractmethod
 
 from kern_comm_lib.base import Status
 from kern_comm_lib.base.log import log_severity
 from kern_comm_lib.base.log.log_formatter import LogFormatter
+from kern_comm_lib.base.threads.mutex import MutexFactory, IMutex
 
 __docformat__ = "google"
 
@@ -72,18 +72,19 @@ class FileLogHandler(ILogHandler):
 
   Attributes:
       file_path: The path to the log file.
-      _lock: A lock to ensure thread-safe file access.
+      _mutex: A lock to ensure thread-safe file access.
       file: The file object for the log file.
   """
 
-  def __init__(self, file_path: str) -> None:
+  def __init__(self, file_path: str, format_pattern: str | None = None) -> None:
     """Initializes a FileLogHandler instance.
 
     Args:
       file_path: The path to the log file.
     """
-    self.file_path = file_path
-    self._lock = threading.Lock()
+    self.file_path: str = file_path
+    self._mutex: IMutex = MutexFactory.create_mutex()
+    self._formatter: LogFormatter = LogFormatter(format_pattern)
     try:
       # self.file should contain the file object, therefore opening the
       # file_path using a context manager is not applicable here.
@@ -105,8 +106,9 @@ class FileLogHandler(ILogHandler):
       A Status object indicating success or failure of the operation.
     """
     try:
-      with self._lock:
-        self.file.write(f"[{severity.name}] {message}\n")
+      formatted_message = self._formatter.format(severity, message)
+      with self._mutex:
+        self.file.write(f"{formatted_message}\n")
         self.file.flush()
       return Status()
     except Exception as e:
@@ -117,7 +119,7 @@ class FileLogHandler(ILogHandler):
 
     Ensures that the file is properly closed, even if an exception occurs.
     """
-    with self._lock:
+    with self._mutex:
       try:
         self.file.close()
         return Status()
@@ -129,7 +131,7 @@ class ConsoleLogHandler(ILogHandler):
   """Log handler that writes log messages to the console.
 
   Attributes:
-    _lock: A lock to ensure thread-safe console access.
+    _mutex: A lock to ensure thread-safe console access.
   """
 
   def __init__(self, format_pattern: str | None = None) -> None:
@@ -138,8 +140,8 @@ class ConsoleLogHandler(ILogHandler):
     Args:
       format_pattern: Optional format string for log messages
     """
-    self._lock = threading.Lock()
-    self._formatter = LogFormatter(format_pattern)
+    self._mutex: IMutex = MutexFactory.create_mutex()
+    self._formatter: LogFormatter = LogFormatter(format_pattern)
 
   def handle(
       self, severity: "log_severity.LogSeverity", message: str
@@ -167,7 +169,7 @@ class ConsoleLogHandler(ILogHandler):
           f"{color_code}{formatted_message}{reset_code}\n"
       )
 
-      with self._lock:
+      with self._mutex:
         sys.stdout.write(formatted_message_with_color)
         sys.stdout.flush()
       return Status()

@@ -1,0 +1,52 @@
+site_name: Kern - Common Python Libraries Documentation
+site_url: https://mydomain.org/mysite
+nav:
+  - Home: index.md
+  - API Reference:
+    - api_reference/index.md
+    - base:
+        - api_reference/base/index.md
+        - log:
+          - api_reference/base/log/index.md
+          - api_reference/base/log/check.md
+          - api_reference/base/log/log.md
+          - api_reference/base/log/log_formatter.md
+          - api_reference/base/log/log_handlers.md
+          - api_reference/base/log/log_severity.md
+          - api_reference/base/log/logger.md
+        - os:
+          - api_reference/base/os/index.md
+          - api_reference/base/os/platform_vars.md
+        - status:
+          - api_reference/base/status/index.md
+          - api_reference/base/status/status.md
+          - api_reference/base/status/status_code.md
+          - api_reference/base/status/status_or.md
+        - threads:
+          - api_reference/base/threads/index.md
+          - api_reference/base/threads/mutex.md
+    - filesystem:
+        - api_reference/filesystem/index.md
+        - api_reference/filesystem/kpath.md
+theme:
+  name: material
+  language: en
+  #logo: assets/images/pyssa_logo.png
+  #favicon: assets/images/pyssa_logo.png
+  font:
+    text: Roboto
+    code: Roboto Mono
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            docstring_section_style: list
+            show_docstring_examples: true
+            separate_signature: true
+            show_signature_annotations: true
+            summary: true
+            show_labels: true
+            members_order: source
