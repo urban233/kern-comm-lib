@@ -6,7 +6,7 @@ Kern (`kern-comm-lib`) is an open-source collection of Python code designed to a
 It provides robust, exception-free Python utilities for building reliable applications
 and features modern error handling with `Status` and `StatusOr` to eliminate runtime surprises.
 <p align="center">
-    <img alt="Kern Logo" src="assets/logo.png"  width="200"/>
+    <img alt="Kern Logo" src="assets/logo_wide.png"  width="600"/>
 </p>
 
 [**Features**](#features) | [**Installation**](#installation) | [**License**](#license)
