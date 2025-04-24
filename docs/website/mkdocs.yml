@@ -2,6 +2,9 @@ site_name: Kern - Common Python Libraries Documentation
 site_url: https://mydomain.org/mysite
 nav:
   - Home: index.md
+  - Programming Guides:
+    - programming_guides/index.md
+    - programming_guides/status_user_guide.md
   - API Reference:
     - api_reference/index.md
     - base:
@@ -45,6 +48,11 @@ theme:
 
 extra_css:
   - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
 
 plugins:
   - search

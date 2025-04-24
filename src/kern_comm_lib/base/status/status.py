@@ -37,7 +37,6 @@ error codes (of type `kern.StatusCode`) enumerated in the status_code
 python module.
 These canonical codes are understood across the codebase.
 """
-
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
@@ -214,18 +213,6 @@ def not_found_error(message: str | None = None) -> "Status":
       Status: A Status object with the NOT_FOUND error code and message.
   """
   return Status(status_code.StatusCode.NOT_FOUND, message)
-
-
-def zero_division_error(message: str | None = None) -> "Status":
-  """Creates a zero division error status.
-
-  Args:
-      message (Optional[str]): An optional message describing the error.
-
-  Returns:
-      Status: A Status object with the ZERO_DIVISION error code and message.
-  """
-  return Status(status_code.StatusCode.ZERO_DIVISION, message)
 
 
 # </editor-fold>

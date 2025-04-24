@@ -39,6 +39,9 @@ AStatusOrElse = Union[
     T, Status
 ]  # Convenient alias for a "value or status" type
 
+from kern_comm_lib.base.status.status import invalid_argument_error
+from kern_comm_lib.base.status.status import not_found_error
+
 from kern_comm_lib.base.log.check import DCHECK
 from kern_comm_lib.base.log.check import DCHECK_EQ
 from kern_comm_lib.base.log.check import DCHECK_IN_ENUM
