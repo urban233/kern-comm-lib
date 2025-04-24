@@ -49,14 +49,33 @@ status with the method `status()` of the `StatusOr` class.
 ```python
 import kern_comm_lib as kern
 
-tmp_path = kern.filesystem.KPath("file_with_content.txt")
-tmp_status: kern.Status = tmp_path.write_bytes(b"Hello, World!")
-if not tmp_status.ok():
-  print(f"Error occured: {tmp_status.message()}")
+def divide(a: int, b: int) -> kern.AStatusOrElse[float]:
+  """Divides two numbers."""
+  if b == 0:
+    return kern.Status.from_status_code(kern.StatusCode.ZERO_DIVISION_ERROR, "Division by zero!")
+  return a / b
 
-tmp_content: kern.StatusOr = kern.StatusOr(bytes, tmp_path.read_bytes())
-if tmp_content.ok():
-  print(f"File content: {tmp_content.val()}")
+tmp_nominator = 5
+tmp_denominator = 0
+
+tmp_result: kern.StatusOr = kern.StatusOr(float, divide(tmp_nominator, tmp_denominator))
+if tmp_result.ok():
+  print(f"Division of {tmp_nominator} / {tmp_denominator} is {tmp_result.val()}")
 else:
-  print(f"Error occured: {tmp_content.status().message()}")
+  print(f"Error occured: {tmp_result.status().message()}")
+```
+
+## Add Status to existing code
+The Kern library provides a decorator called `@use_status` that 
+can be applied to existing functions to enable the use of `Status` and 
+`StatusOr` for error handling.
+
+```python
+import pathlib
+import kern_comm_lib as kern
+
+@kern.use_status
+def exists(path: pathlib.Path) -> kern.AStatusOrElse[bool]:
+  """Checks if a path exists but in an exception-free way."""
+  return path.exists()
 ```

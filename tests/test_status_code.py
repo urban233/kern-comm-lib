@@ -42,11 +42,6 @@ def test_status_code_invalid_argument() -> None:
   assert kern.StatusCode.INVALID_ARGUMENT == 3  # noqa: PLR2004
 
 
-def test_status_code_custom_zero_division() -> None:
-  """Tests that the ZERO_DIVISION status code has the expected value of 200."""
-  assert kern.StatusCode.ZERO_DIVISION == 200  # noqa: PLR2004
-
-
 def test_get_status_code_for_known_exception() -> None:
   """Tests that a known exception (ValueError) maps to the correct status code."""
   assert (

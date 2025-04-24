@@ -41,46 +41,6 @@ def add_to_list(src_list: list, new_item: int) -> kern.Status:
   return kern.Status()
 
 
-def divide(a: int, b: int) -> kern.AStatusOrElse[float]:
-  """Divide two numbers."""
-  if b == 0:
-    return kern.status.zero_division_error("Division by zero!")
-  return a / b
-
-
-@kern.use_status
-def exists(path: pathlib.Path) -> kern.AStatusOrElse[bool]:
-  """Checks if a path exists but in an exception-free way."""
-  return path.exists()
-
-
-def test_decorator() -> None:
-  """Tests the decorator."""
-  tmp_path = pathlib.Path("test.txt")
-  tmp_status = kern.StatusOr(bool, exists(tmp_path))
-  if tmp_status.ok():
-    print(f"Path exists: {tmp_path}")
-  else:
-    print(f"Error: {tmp_status.status()}")
-
-
-def test_status_or_init() -> None:
-  """Tests the initialization of StatusOr class."""
-  tmp_list = [1, 2, 3]
-  tmp_status: kern.Status = add_to_list(tmp_list, 4)
-  assert tmp_status.ok() is True
-
-  tmp_list = []
-  tmp_status = add_to_list(tmp_list, 4)
-  assert tmp_status.ok() is False
-
-  tmp_number = kern.StatusOr(float, divide(1, 0))
-  if tmp_number.ok():
-    print(tmp_number.val())
-  else:
-    print(tmp_number.status())
-
-
 def test_experiment() -> None:
   """Tests to experiment."""
   try:

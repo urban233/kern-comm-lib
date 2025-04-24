@@ -82,8 +82,8 @@ class LogFormatter:
       - If the stack depth is insufficient, "unknown" and -1 are used as defaults
         for the file name and line number, respectively.
     """
-    now = datetime.datetime.now()  # Get the current date and time
-    stack = inspect.stack()  # Retrieve the call stack
+    now = datetime.datetime.now()
+    stack = inspect.stack()
 
     # Determine the caller's file name and line number
     if len(stack) > 5:

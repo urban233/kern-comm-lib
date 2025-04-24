@@ -125,9 +125,6 @@ class StatusCode(enum.IntEnum):
   VALUE_ERROR = 149
   ZERO_DIVISION_ERROR = 150
   # </editor-fold>
-  # <editor-fold desc="Custom error codes">
-  ZERO_DIVISION = 200
-  # </editor-fold>
 
 
 # Exception to StatusCode mapping
